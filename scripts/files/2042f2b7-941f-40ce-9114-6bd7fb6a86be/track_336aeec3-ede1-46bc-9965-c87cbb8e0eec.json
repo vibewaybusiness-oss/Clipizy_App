@@ -1,0 +1,29 @@
+{
+  "file_id": "336aeec3-ede1-46bc-9965-c87cbb8e0eec",
+  "project_id": "2042f2b7-941f-40ce-9114-6bd7fb6a86be",
+  "file_type": "track",
+  "metadata": {
+    "filename": "Eternal Flame of Time.mp3",
+    "file_type": "track",
+    "size_bytes": 3371373,
+    "content_type": "audio/mpeg",
+    "duration": null,
+    "resolution": null,
+    "format": null,
+    "sample_rate": null,
+    "channels": null,
+    "bitrate": null,
+    "aspect_ratio": null,
+    "custom_metadata": null
+  },
+  "s3_key": "users/d517ffb8-dc40-5e27-8d4f-13e6a23c7547/projects/2042f2b7-941f-40ce-9114-6bd7fb6a86be/tracks/Eternal Flame of Time.mp3",
+  "created_at": "2025-10-18T04:07:00.381852",
+  "additional_data": {
+    "ai_generated": false,
+    "prompt": null,
+    "genre": null,
+    "instrumental": false,
+    "video_description": null,
+    "title": "Eternal Flame of Time.mp3"
+  }
+}

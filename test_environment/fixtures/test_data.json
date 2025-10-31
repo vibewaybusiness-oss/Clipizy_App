@@ -1,0 +1,197 @@
+{
+  "test_users": [
+    {
+      "id": "test-user-1",
+      "email": "test1@example.com",
+      "name": "Test User 1",
+      "password": "testpassword123"
+    },
+    {
+      "id": "test-user-2", 
+      "email": "test2@example.com",
+      "name": "Test User 2",
+      "password": "testpassword456"
+    }
+  ],
+  "test_projects": [
+    {
+      "id": "test-project-1",
+      "name": "Test Music Project 1",
+      "description": "Test project for music clip generation",
+      "type": "music-clip",
+      "user_id": "test-user-1"
+    },
+    {
+      "id": "test-project-2",
+      "name": "Test Video Project 1", 
+      "description": "Test project for video creation",
+      "type": "video-creation",
+      "user_id": "test-user-2"
+    }
+  ],
+  "test_tracks": [
+    {
+      "id": "test-track-1",
+      "title": "Test Track 1",
+      "filename": "test_track_1.mp3",
+      "project_id": "test-project-1",
+      "user_id": "test-user-1",
+      "duration": 180.5,
+      "format": "mp3",
+      "sample_rate": 44100,
+      "channels": 2,
+      "bitrate": 320,
+      "size_mb": 7.2
+    },
+    {
+      "id": "test-track-2",
+      "title": "Test Track 2", 
+      "filename": "test_track_2.wav",
+      "project_id": "test-project-1",
+      "user_id": "test-user-1",
+      "duration": 240.0,
+      "format": "wav",
+      "sample_rate": 48000,
+      "channels": 2,
+      "bitrate": 1536,
+      "size_mb": 45.1
+    }
+  ],
+  "test_files": {
+    "audio": {
+      "mp3": {
+        "filename": "test_audio.mp3",
+        "content_type": "audio/mpeg",
+        "size_bytes": 1024000,
+        "duration": 30.0
+      },
+      "wav": {
+        "filename": "test_audio.wav", 
+        "content_type": "audio/wav",
+        "size_bytes": 5000000,
+        "duration": 60.0
+      }
+    },
+    "image": {
+      "jpg": {
+        "filename": "test_image.jpg",
+        "content_type": "image/jpeg", 
+        "size_bytes": 500000,
+        "width": 1920,
+        "height": 1080
+      },
+      "png": {
+        "filename": "test_image.png",
+        "content_type": "image/png",
+        "size_bytes": 800000,
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    "video": {
+      "mp4": {
+        "filename": "test_video.mp4",
+        "content_type": "video/mp4",
+        "size_bytes": 50000000,
+        "duration": 120.0,
+        "width": 1920,
+        "height": 1080
+      }
+    }
+  },
+  "api_endpoints": {
+    "auth": [
+      "/api/auth/google",
+      "/api/auth/google/callback",
+      "/api/auth/github", 
+      "/api/auth/github/callback",
+      "/api/auth/login",
+      "/api/auth/register",
+      "/api/auth/refresh",
+      "/api/auth/logout"
+    ],
+    "storage": [
+      "/api/storage/health",
+      "/api/storage/projects",
+      "/api/storage/projects/{project_id}",
+      "/api/storage/projects/{project_id}/tracks/upload",
+      "/api/storage/projects/{project_id}/tracks/batch-upload",
+      "/api/storage/projects/{project_id}/images/upload",
+      "/api/storage/projects/{project_id}/videos/upload",
+      "/api/storage/projects/{project_id}/tracks/{track_id}",
+      "/api/storage/projects/{project_id}/tracks/{track_id}/url"
+    ],
+    "ai": [
+      "/api/ai/prompts",
+      "/api/ai/generate",
+      "/api/ai/status/{job_id}"
+    ],
+    "analytics": [
+      "/api/analytics/stats",
+      "/api/analytics/usage",
+      "/api/analytics/performance"
+    ]
+  },
+  "test_scenarios": [
+    {
+      "name": "User Registration and Login",
+      "steps": [
+        "Generate OAuth URL",
+        "Complete OAuth flow",
+        "Create user account",
+        "Login with credentials",
+        "Verify user session"
+      ]
+    },
+    {
+      "name": "Project Creation and Management", 
+      "steps": [
+        "Create new project",
+        "Upload audio track",
+        "Upload image",
+        "Generate music clip",
+        "Download result"
+      ]
+    },
+    {
+      "name": "File Upload and Processing",
+      "steps": [
+        "Validate file type",
+        "Upload to storage",
+        "Extract metadata",
+        "Create database record",
+        "Generate presigned URL"
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "steps": [
+        "Test invalid endpoints",
+        "Test invalid file types",
+        "Test authentication errors",
+        "Test storage errors",
+        "Verify error responses"
+      ]
+    }
+  ],
+  "performance_benchmarks": {
+    "api_response_time": {
+      "health_check": 0.1,
+      "auth_endpoints": 0.5,
+      "storage_operations": 1.0,
+      "file_upload": 2.0
+    },
+    "storage_operations": {
+      "file_save": 0.5,
+      "file_exists": 0.1,
+      "file_delete": 0.3,
+      "metadata_extraction": 1.0
+    },
+    "database_operations": {
+      "user_query": 0.1,
+      "project_query": 0.1,
+      "track_query": 0.1,
+      "complex_join": 0.5
+    }
+  }
+}

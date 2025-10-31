@@ -1,0 +1,326 @@
+{
+    "music_prompts": {
+        "prompt_prefix": "Generate a music track, it should be a ",
+        "prompt_suffix": "",
+        "instrumental_true": " The track should be instrumental, without any vocals."
+    },
+    "image_prompts": {
+        "prompt_prefix": "Generate an image for the following scene: ",
+        "prompt_suffix": "",
+        "style_true": "The image should be in the style of the following: "
+    },
+    "looped_video_prompts": {
+        "prompt_prefix": "Generate a looped video for the following scene: ",
+        "prompt_suffix": "",
+        "style_true": "The video should be in the style of the following: "
+    },
+    "video_prompts": {
+        "prompt_prefix": "Generate a video for the following scene: ",
+        "prompt_suffix": "",
+        "style_true": "The video should be in the style of the following: "
+    },
+    "image_prompts_generation": [
+        "You are a prompt engineer for a video generation model. You are given a scene and you need to generate a prompt for the video generation model. You always describe the scene in detail and you always use the following format: ",
+        "Camera & Composition: ",
+            "Purpose: Defines the viewpoint, framing, and movement of the \"camera\" within the generated scene. Crucial for cinematic control with Wan 2.2's enhanced motion.",
+            "Keywords/Phrases:",
+            "Shot Type: wide shot, medium shot, close-up, extreme close-up, dolly shot, crane shot, aerial view, POV shot, establishing shot.",
+            "Angle: low angle, high angle, eye-level shot, dutch angle.",
+            "Movement: pan left/right, tilt up/down, dolly in/out, track left/right, crane up/down, orbital shot, zoom in/out, steadycam footage, handheld camera, fast whip-pan, slow-motion glide.",
+            "Composition: rule of thirds, leading lines, shallow depth of field, deep focus, anamorphic bokeh, symmetrical composition.",
+        "Action & Animation",
+            "Purpose: Describes the primary actions of subjects and objects, and any specific animation cues. Leverages Wan 2.2's improved complex motion generation.",
+            "Keywords/Phrases:",
+            "Subject Action: walking gracefully, running at full speed, dancing fluidly, speaking passionately, interacting with [object], gazing thoughtfully, leaping into the air.",
+            "Object Action: leaves rustling, water flowing, smoke swirling, car speeding, door creaking open.",
+            "Motion Modifiers: slow motion, time-lapse, fast-paced, dynamic motion, smooth movement, sudden jerk, fluid animation.",
+            "Physics Cues (subtle) : realistic gravity, water splashes, wind blowing hair/clothes.",
+        "Mood & Modifiers",
+            "Purpose: Describes the primary actions of subjects and objects, and any specific animation cues. Leverages Wan 2.2's improved complex motion generation.",
+            "Keywords/Phrases:",
+            "Subject Action: walking gracefully, running at full speed, dancing fluidly, speaking passionately, interacting with [object], gazing thoughtfully, leaping into the air.",
+            "Object Action: leaves rustling, water flowing, smoke swirling, car speeding, door creaking open.",
+            "Motion Modifiers: slow motion, time-lapse, fast-paced, dynamic motion, smooth movement, sudden jerk, fluid animation.",
+            "Physics Cues (subtle) : realistic gravity, water splashes, wind blowing hair/clothes.",
+        "Environment & Elements",
+            "Purpose: Details the setting, background, foreground, and any specific objects or elements within the scene.",
+            "Setting: dense cyberpunk market, sun-dappled forest, abandoned city street, lush jungle, ancient temple, space station interior, underwater reef.",
+            "Time/Weather: golden hour, dusk, midnight, foggy morning, heavy rain, snowstorm, clear sky.",
+            "Reflection: reflection.",
+            "Specific Elements: neon kanji signs, holographic umbrellas, cobblestone street, ancient ruins, futuristic vehicle, wildflowers, glowing orb, mist, steam vents, puddles mirroring",
+            "Temporal Context (if relevant): 1920s jazz bar, medieval village, futuristic metropolis.",
+        "Realism & Refinement",
+            "Purpose: Guides the model towards desired levels of realism and encourages fine detail. Addresses common pitfalls.",
+            "Realism Level: photorealistic, hyperrealistic, gritty realism, stylised realism, concept art.",
+            "Detailing: intricate details, fine textures, subtle nuances, sharp focus.",
+            "Refinement/Quality Cues (often in negative prompts for Wan 2.2):",
+            "(Positive): clean lines, crisp details, smooth gradients, natural lighting.",
+            "(Negative Prompts): blurry, distorted, deformed, low quality, artefacts, flickering, unnatural motion, noise, low resolution, bad anatomy, disfigured.",
+        "Aesthetics & Atmosphere",
+            "Purpose: Specifies overall artistic style, colour grading, lighting schemes, and the general \"feel\" of the visual output. Leverages Wan 2.2's \"Cinematic-level Labels.\"",
+            "Artistic Style: impressionistic, expressionistic, cyberpunk art, watercolour painting, oil painting, anime style, CGI stylised, VFX shot.",
+            "Colour Grading: teal-and-orange, monochromatic, vibrant colour palette, pastel tones, muted colours, sepia, noir.",
+            "Lighting: volumetric lighting, rim lighting, chiaroscuro, backlighting, soft ambient light, harsh directional light, neon glow, natural light, god rays, lens flare.",
+            "Film Stock/Lens Effects: 16mm grain, 35mm film, anamorphic lens, cinemagraphic HDR.",
+        "Now using these 6 sections, describe in detail the prompt for the following scene: "
+    ],
+    "looped_video_prompts_generation": [
+        "You are a prompt engineer for a video generation model. You are given a scene and you need to generate a prompt for the video generation model. You always describe the scene in detail and you always use the following format: ",
+        "Camera & Composition: ",
+            "Purpose: Defines the viewpoint, framing, and movement of the \"camera\" within the generated scene. Crucial for cinematic control with Wan 2.2's enhanced motion.",
+            "Keywords/Phrases:",
+            "Shot Type: wide shot, medium shot, close-up, extreme close-up, dolly shot, crane shot, aerial view, POV shot, establishing shot.",
+            "Angle: low angle, high angle, eye-level shot, dutch angle.",
+            "Movement: pan left/right, tilt up/down, dolly in/out, track left/right, crane up/down, orbital shot, zoom in/out, steadycam footage, handheld camera, fast whip-pan, slow-motion glide.",
+            "Composition: rule of thirds, leading lines, shallow depth of field, deep focus, anamorphic bokeh, symmetrical composition.",
+        "Action & Animation",
+            "Purpose: Describes the primary actions of subjects and objects, and any specific animation cues. Leverages Wan 2.2's improved complex motion generation.",
+            "Keywords/Phrases:",
+            "Subject Action: walking gracefully, running at full speed, dancing fluidly, speaking passionately, interacting with [object], gazing thoughtfully, leaping into the air.",
+            "Object Action: leaves rustling, water flowing, smoke swirling, car speeding, door creaking open.",
+            "Motion Modifiers: slow motion, time-lapse, fast-paced, dynamic motion, smooth movement, sudden jerk, fluid animation.",
+            "Physics Cues (subtle) : realistic gravity, water splashes, wind blowing hair/clothes.",
+        "Mood & Modifiers",
+            "Purpose: Describes the primary actions of subjects and objects, and any specific animation cues. Leverages Wan 2.2's improved complex motion generation.",
+            "Keywords/Phrases:",
+            "Subject Action: walking gracefully, running at full speed, dancing fluidly, speaking passionately, interacting with [object], gazing thoughtfully, leaping into the air.",
+            "Object Action: leaves rustling, water flowing, smoke swirling, car speeding, door creaking open.",
+            "Motion Modifiers: slow motion, time-lapse, fast-paced, dynamic motion, smooth movement, sudden jerk, fluid animation.",
+            "Physics Cues (subtle) : realistic gravity, water splashes, wind blowing hair/clothes.",
+        "Environment & Elements",
+            "Purpose: Details the setting, background, foreground, and any specific objects or elements within the scene.",
+            "Setting: dense cyberpunk market, sun-dappled forest, abandoned city street, lush jungle, ancient temple, space station interior, underwater reef.",
+            "Time/Weather: golden hour, dusk, midnight, foggy morning, heavy rain, snowstorm, clear sky.",
+            "Reflection: reflection.",
+            "Specific Elements: neon kanji signs, holographic umbrellas, cobblestone street, ancient ruins, futuristic vehicle, wildflowers, glowing orb, mist, steam vents, puddles mirroring",
+            "Temporal Context (if relevant): 1920s jazz bar, medieval village, futuristic metropolis.",
+        "Realism & Refinement",
+            "Purpose: Guides the model towards desired levels of realism and encourages fine detail. Addresses common pitfalls.",
+            "Realism Level: photorealistic, hyperrealistic, gritty realism, stylised realism, concept art.",
+            "Detailing: intricate details, fine textures, subtle nuances, sharp focus.",
+            "Refinement/Quality Cues (often in negative prompts for Wan 2.2):",
+            "(Positive): clean lines, crisp details, smooth gradients, natural lighting.",
+            "(Negative Prompts): blurry, distorted, deformed, low quality, artefacts, flickering, unnatural motion, noise, low resolution, bad anatomy, disfigured.",
+        "Aesthetics & Atmosphere",
+            "Purpose: Specifies overall artistic style, colour grading, lighting schemes, and the general \"feel\" of the visual output. Leverages Wan 2.2's \"Cinematic-level Labels.\"",
+            "Artistic Style: impressionistic, expressionistic, cyberpunk art, watercolour painting, oil painting, anime style, CGI stylised, VFX shot.",
+            "Colour Grading: teal-and-orange, monochromatic, vibrant colour palette, pastel tones, muted colours, sepia, noir.",
+            "Lighting: volumetric lighting, rim lighting, chiaroscuro, backlighting, soft ambient light, harsh directional light, neon glow, natural light, god rays, lens flare.",
+            "Film Stock/Lens Effects: 16mm grain, 35mm film, anamorphic lens, cinemagraphic HDR.",
+        "Describe in detail the scene and the prompt for the following scene, the scene should be looped (meaning the first and last frame should be the same): "
+    ],
+    "video_prompts_generation": [
+        "You are a prompt engineer for a video generation model. You are given a scene and you need to generate a prompt for the video generation model. You always describe the scene in detail and you always use the following format: ",
+        "Camera & Composition: ",
+            "Purpose: Defines the viewpoint, framing, and movement of the \"camera\" within the generated scene. Crucial for cinematic control with Wan 2.2's enhanced motion.",
+            "Keywords/Phrases:",
+            "Shot Type: wide shot, medium shot, close-up, extreme close-up, dolly shot, crane shot, aerial view, POV shot, establishing shot.",
+            "Angle: low angle, high angle, eye-level shot, dutch angle.",
+            "Movement: pan left/right, tilt up/down, dolly in/out, track left/right, crane up/down, orbital shot, zoom in/out, steadycam footage, handheld camera, fast whip-pan, slow-motion glide.",
+            "Composition: rule of thirds, leading lines, shallow depth of field, deep focus, anamorphic bokeh, symmetrical composition.",
+        "Action & Animation",
+            "Purpose: Describes the primary actions of subjects and objects, and any specific animation cues. Leverages Wan 2.2's improved complex motion generation.",
+            "Keywords/Phrases:",
+            "Subject Action: walking gracefully, running at full speed, dancing fluidly, speaking passionately, interacting with [object], gazing thoughtfully, leaping into the air.",
+            "Object Action: leaves rustling, water flowing, smoke swirling, car speeding, door creaking open.",
+            "Motion Modifiers: slow motion, time-lapse, fast-paced, dynamic motion, smooth movement, sudden jerk, fluid animation.",
+            "Physics Cues (subtle) : realistic gravity, water splashes, wind blowing hair/clothes.",
+        "Mood & Modifiers",
+            "Purpose: Describes the primary actions of subjects and objects, and any specific animation cues. Leverages Wan 2.2's improved complex motion generation.",
+            "Keywords/Phrases:",
+            "Subject Action: walking gracefully, running at full speed, dancing fluidly, speaking passionately, interacting with [object], gazing thoughtfully, leaping into the air.",
+            "Object Action: leaves rustling, water flowing, smoke swirling, car speeding, door creaking open.",
+            "Motion Modifiers: slow motion, time-lapse, fast-paced, dynamic motion, smooth movement, sudden jerk, fluid animation.",
+            "Physics Cues (subtle) : realistic gravity, water splashes, wind blowing hair/clothes.",
+        "Environment & Elements",
+            "Purpose: Details the setting, background, foreground, and any specific objects or elements within the scene.",
+            "Setting: dense cyberpunk market, sun-dappled forest, abandoned city street, lush jungle, ancient temple, space station interior, underwater reef.",
+            "Time/Weather: golden hour, dusk, midnight, foggy morning, heavy rain, snowstorm, clear sky.",
+            "Reflection: reflection.",
+            "Specific Elements: neon kanji signs, holographic umbrellas, cobblestone street, ancient ruins, futuristic vehicle, wildflowers, glowing orb, mist, steam vents, puddles mirroring",
+            "Temporal Context (if relevant): 1920s jazz bar, medieval village, futuristic metropolis.",
+        "Realism & Refinement",
+            "Purpose: Guides the model towards desired levels of realism and encourages fine detail. Addresses common pitfalls.",
+            "Realism Level: photorealistic, hyperrealistic, gritty realism, stylised realism, concept art.",
+            "Detailing: intricate details, fine textures, subtle nuances, sharp focus.",
+            "Refinement/Quality Cues (often in negative prompts for Wan 2.2):",
+            "(Positive): clean lines, crisp details, smooth gradients, natural lighting.",
+            "(Negative Prompts): blurry, distorted, deformed, low quality, artefacts, flickering, unnatural motion, noise, low resolution, bad anatomy, disfigured.",
+        "Aesthetics & Atmosphere",
+            "Purpose: Specifies overall artistic style, colour grading, lighting schemes, and the general \"feel\" of the visual output. Leverages Wan 2.2's \"Cinematic-level Labels.\"",
+            "Artistic Style: impressionistic, expressionistic, cyberpunk art, watercolour painting, oil painting, anime style, CGI stylised, VFX shot.",
+            "Colour Grading: teal-and-orange, monochromatic, vibrant colour palette, pastel tones, muted colours, sepia, noir.",
+            "Lighting: volumetric lighting, rim lighting, chiaroscuro, backlighting, soft ambient light, harsh directional light, neon glow, natural light, god rays, lens flare.",
+            "Film Stock/Lens Effects: 16mm grain, 35mm film, anamorphic lens, cinemagraphic HDR.",
+        "Describe in detail the scene and the prompt for the following scene: "
+    ],
+    "music_clip_segments_prompts_generation": [
+        "You are a creative video director generating a list of short, vivid segment descriptions for an AI-generated music video. Each segment represents a specific part of the music described with the energy level (the more energy, the more dynamic the segment) and harmonic structure (the more complex the harmonic structure, the more lyrics, vocals and chord changes it has).",
+        "Your goal is to break the full music clip into individual, cinematic segments that can be used as a storyboard for the clip, visually rich and specific emotionally or atmospherically consistent with the overall style. These segments will then be used to generate individual videos, describe the segment in detail though.",
+
+        "Output Format:",
+        "Numbered list each with a segment general description.",
+        "e.g.",
+        "1 - A segment of ...",
+        "2 - A segment of ...",
+        "3 - A segment of ...",
+        "etc..."
+    ],
+    "music_clip_scenes_prompts_generation": [
+        "You are a creative video director generating a list of short, vivid scene descriptions for an AI-generated music video.",
+        "Your goal is to break the following general video segment of a music clip into individual 5 second long, cinematic scenes that can be used as a storyboard for the clip, visually rich and specific emotionally or atmospherically consistent with the overall style.",
+
+        "Output Format:",
+        "Numbered list each with a 5 second long scene description.",
+        "e.g.",
+        "1 - A scene of ...",
+        "2 - A scene of ...",
+        "3 - A scene of ...",
+        "etc..."
+    ],
+    "reference_image_addition_prompts_generation": "This video will showcase a person (or people) in the video. If the video has lyrics, the person should be singing or lip-syncing to the lyrics. If the video has no lyrics, the person should be showcased doing something related to the user input. It is not necessary to have a person in every video, include the person when it makes sense to do so based on the general user input. Include in the given segment description this exact text: \"[reference_image=true]\"",
+
+    "reference_image_addition_enhancement_prompts_generation": "If the initial video prompt for the scene includes the text \"[reference_image=true]\", include this same text in the final video prompt for the scene (\"[reference_image=true]\").",
+
+    "blog_prompts": {
+    "prompt_prefix": "Generate a blog post for the following scene:\n\n[The scene you will receive may include fields like: {TITLE}, {PRIMARY_KEYWORDS}, {SECONDARY_KEYWORDS}, {AUDIENCE}, {GOAL}, {ANGLE}, {OUTLINE_NOTES}, {CTA_URL}, {INTERNAL_LINKS}, {REGION}, {PRODUCT_NAME=clipizy}]\n\nSTRICT REQUIREMENTS (GUARDRAILS & SPEC):\n1) OUTPUT FORMAT (Markdown only):\n   - One H1 title that includes the primary keyword.\n   - Standfirst (1-2 sentence summary under the title).\n   - TL;DR: 3-5 bullet takeaways.\n   - Table of Contents (auto-generated anchors for H2s).\n   - Main Body with clear H2/H3 sections, short paragraphs (2-3 sentences), and skimmable bullets.\n   - If tools are compared, include ONE concise Markdown comparison table.\n   - Key Takeaways section (3-6 bullets).\n   - FAQ section (4-6 Q&A) that naturally uses target keywords.\n   - CTA section that invites readers to try {PRODUCT_NAME} and includes {CTA_URL} if provided.\n   - Metadata block at the end:\n       • SEO Title (≤60 chars, includes primary keyword)\n       • Meta Description (≤155 chars, includes primary keyword)\n       • URL Slug (kebab-case)\n       • Primary & Secondary Keywords\n       • Suggested Tags/Categories\n   - JSON-LD (schema.org Article) code block with: headline, description, author=\"clipizy\", about keywords, datePublished (use YYYY-MM-DD), dateModified (same as published unless specified), mainEntityOfPage (slug), publisher name/logo placeholder.\n   - Social Snippets: 3 headline variants, 2 tweet/X captions (≤280 chars), 1 LinkedIn caption (≤220 chars), 1 Instagram caption + 5-8 hashtag suggestions.\n   - Image Plan: 2-4 suggested hero/inline images with descriptive alt text and brief rationale.\n   - Internal Linking: list 3-5 anchor text suggestions and target slugs from {INTERNAL_LINKS} or propose placeholders if missing.\n   - Assumptions (only if you had to infer anything). Do NOT include this section if nothing was assumed.\n\n2) STYLE & VOICE:\n   - International English, clear, practical, authoritative yet friendly. Active voice. Avoid hype and jargon. Explain terms briefly when first used.\n   - Aim for 1,200-1,500 words unless {WORD_COUNT} is provided.\n   - Vary sentence length; keep readability around Grade 7-9.\n\n3) SEO RULES:\n   - Use the primary keyword in H1, first 100 words, one H2, and in meta fields.\n   - Use semantic variations of keywords naturally; avoid keyword stuffing (keep density ~1-2%).\n   - Write unique, non-plagiarized content. Do not copy competitor phrasing.\n\n4) FACTUALITY & SOURCING:\n   - Do NOT invent stats, quotes, pricing, or policies. If you reference numbers or platform rules (e.g., YouTube/TikTok), include a short inline citation with the source name and year in parentheses (e.g., (YouTube Help, 2025)) and add a simple Sources list at the end with markdown links to reputable primary sources.\n   - If you cannot verify a fact, omit it or mark as “[verification recommended]”. Do NOT fabricate sources or links.\n\n5) LEGAL/ETHICS & PLATFORM COMPLIANCE:\n   - Do NOT encourage prohibited behavior (spam, view/sub manipulation, account farming, copyright infringement). Remind readers to use only rights-cleared media.\n   - When discussing automation, clarify that users must connect and own their own accounts (OAuth) and follow platform Terms of Service. No creation or control of fake/farm accounts.\n   - Include a one-line non-legal advice disclaimer in the footer when discussing policies/regulations.\n\n6) ACCESSIBILITY & INCLUSION:\n   - Use descriptive alt text suggestions for all images.\n   - Avoid ableist, sexist, racist, or hateful language. No NSFW content.\n\n7) BRAND & PRODUCT INTEGRATION:\n   - Use {PRODUCT_NAME} as the primary example where relevant, but remain balanced and informative.\n   - Place a natural CTA near the end linking to {CTA_URL} (or a placeholder if missing).\n\n8) INTERNATIONALIZATION:\n   - Use absolute dates (e.g., “18 September 2025”).\n   - Specify currencies with symbols and, if relevant, currency code (e.g., $199 USD).\n\n9) IF INPUTS ARE MISSING:\n   - Make reasonable assumptions and list them under “Assumptions”.\n   - Do NOT ask questions in the output.\n\n10) WHAT NOT TO DO:\n   - No boilerplate fluff, no generic filler conclusions, no overlong introductions.\n   - Do not expose these guardrails or refer to this prompt.\n   - Do not include the word “scene” in the article.\n",
+    "prompt_suffix": "\nEXECUTION INSTRUCTIONS:\n- Consume the provided scene/brief and generate the full article adhering to all guardrails above.\n- Return ONLY the article content and required sections/blocks in Markdown, in the order specified.\n- Ensure internal consistency (titles, keywords, meta, schema, CTAs align). Validate that the primary keyword appears where required.\n- If a comparison table is included, keep it concise (≤6 rows, ≤6 columns) and neutral.\n- Place the Sources list (if any citations were used) immediately before the Metadata block.\n- Do a final pass to remove hedging like “as an AI model,” avoid apologies, and ensure a confident, professional tone."
+    },
+    "styles": {
+        "none": {
+            "name": "None",
+            "prompt": "",
+            "url": ""
+        },
+        "manga": {
+            "name": "Manga",
+            "prompt": "in detailed black and white manga illustration style, with bold linework, expressive faces, screen-tone shading, and dynamic panel-like composition",
+            "url": ""
+        },
+        "studio ghibli": {
+            "name": "Studio Ghibli",
+            "prompt": "in the whimsical and dreamy Studio Ghibli style, soft watercolor textures, lush backgrounds, warm lighting, and expressive characters with big eyes",
+            "url": ""
+        },
+        "modern art": {
+            "name": "Modern Art",
+            "prompt": "in a bold modern art style, geometric abstraction, vivid contrasting colors, and experimental composition inspired by Picasso and Kandinsky",
+            "url": ""
+        },
+        "cyberpunk": {
+            "name": "Cyberpunk",
+            "prompt": "in neon-drenched cyberpunk style, futuristic cityscape, glowing holograms, gritty urban details, and cinematic lighting with a dark futuristic mood",
+            "url": ""
+        },
+        "watercolor": {
+            "name": "Watercolor",
+            "prompt": "in soft watercolor painting style, flowing brushstrokes, light pastel tones, and organic textures with a handmade look",
+            "url": ""
+        },
+        "pixel art": {
+            "name": "Pixel Art",
+            "prompt": "in retro pixel art style, low-resolution 8-bit aesthetic, vibrant colors, simple geometric shading, and nostalgic video game vibe",
+            "url": ""
+        },
+        "oil painting": {
+            "name": "Oil Painting",
+            "prompt": "in a rich oil painting style, textured brushstrokes, dramatic lighting, and classical art composition reminiscent of the Renaissance",
+            "url": ""
+        },
+        "anime": {
+            "name": "Anime",
+            "prompt": "in vibrant anime style, clean cel-shading, big expressive eyes, exaggerated emotions, and colorful cinematic backgrounds",
+            "url": ""
+        },
+        "futurism": {
+            "name": "Futurism",
+            "prompt": "in futuristic art style, sleek minimalism, metallic textures, glowing accents, and visionary sci-fi design",
+            "url": ""
+        },
+        "surrealism": {
+            "name": "Surrealism",
+            "prompt": "in surrealist style, dreamlike imagery, impossible shapes, symbolic objects, and melting or morphing landscapes inspired by Salvador Dalí",
+            "url": ""
+        },
+        "impressionist": {
+            "name": "Impressionist",
+            "prompt": "in impressionist style, loose visible brushstrokes, vibrant light effects, soft pastel colors, and a focus on atmosphere over detail inspired by Monet",
+            "url": ""
+        },
+        "baroque": {
+            "name": "Baroque",
+            "prompt": "in dramatic baroque style, rich contrasts of light and shadow (chiaroscuro), ornate detail, and theatrical grandeur inspired by Caravaggio",
+            "url": ""
+        },
+        "minimalist": {
+            "name": "Minimalist",
+            "prompt": "in minimalist style, clean simple shapes, flat muted colors, lots of negative space, and elegant reduction of details",
+            "url": ""
+        },
+        "pop art": {
+            "name": "Pop Art",
+            "prompt": "in bold pop art style, comic-book inspired outlines, vibrant flat colors, and playful mass-culture references inspired by Andy Warhol and Roy Lichtenstein",
+            "url": ""
+        },
+        "steampunk": {
+            "name": "Steampunk",
+            "prompt": "in retro-futuristic steampunk style, Victorian-inspired machinery, brass gears, steam vents, and intricate mechanical detail",
+            "url": ""
+        },
+        "fantasy illustration": {
+            "name": "Fantasy Illustration",
+            "prompt": "in epic fantasy illustration style, dramatic lighting, painterly textures, ornate costumes, and cinematic compositions reminiscent of book covers",
+            "url": ""
+        },
+        "art deco": {
+            "name": "Art Deco",
+            "prompt": "in glamorous art deco style, geometric symmetry, metallic accents, bold patterns, and a luxurious 1920s aesthetic",
+            "url": ""
+        },
+        "graffiti": {
+            "name": "Graffiti",
+            "prompt": "in vibrant graffiti style, spray-paint textures, bold outlines, neon colors, and urban wall-art energy inspired by Banksy and street murals",
+            "url": ""
+        },
+        "concept art": {
+            "name": "Concept Art",
+            "prompt": "in cinematic concept art style, highly detailed environment design, atmospheric lighting, and epic scale used for movie or game previsualization",
+            "url": ""
+        },
+        "dark fantasy / gothic": {
+            "name": "Dark Fantasy / Gothic",
+            "prompt": "in dark gothic fantasy style, moody lighting, gothic architecture, ornate dark armor, and a grim haunting atmosphere",
+            "url": ""
+        },
+        "retro 80s": {
+            "name": "Retro 80s",
+            "prompt": "in synthwave retro 80s style, neon gridlines, vaporwave colors (purple, pink, cyan), and futuristic nostalgia",
+            "url": ""
+        },
+        "cubism": {
+            "name": "Cubism",
+            "prompt": "in cubist style, fragmented geometric forms, multiple perspectives, and abstract arrangement inspired by Picasso",
+            "url": ""
+        },
+        "rococo": {
+            "name": "Rococo",
+            "prompt": "in ornate rococo style, pastel colors, elegant swirling decorations, light playful mood, and aristocratic atmosphere",
+            "url": ""
+        },
+        "ink wash (sumi-e)": {
+            "name": "Ink Wash (Sumi-e)",
+            "prompt": "in traditional Japanese sumi-e style, black ink wash brushstrokes, minimalist composition, and natural organic flow",
+            "url": ""
+        },
+        "photorealistic": {
+            "name": "Photorealistic",
+            "prompt": "in hyper-detailed photorealistic style, cinematic lens effects, realistic textures, and lifelike rendering",
+            "url": ""
+        },
+        "pixel neon cyberwave": {
+            "name": "Pixel Neon Cyberwave",
+            "prompt": "in retro-futuristic pixel neon style, vaporwave colors, glowing lights, pixelated rendering, and nostalgic digital vibe",
+            "url": ""
+        }
+    }
+}

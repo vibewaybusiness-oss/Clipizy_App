@@ -1,0 +1,3 @@
+"""
+clipizy Backend API Package
+"""

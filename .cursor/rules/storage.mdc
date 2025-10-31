@@ -1,0 +1,179 @@
+---
+description: Anything related to project or data storage, file upload, data update
+alwaysApply: false
+---
+
+The local storage information upload in Local Storage, S3 and SQL database should all be done directly within the api "storage" service, to centralize services.
+
+lib > routes > Storage Service 
+We have:
+
+api/services/storage/storage.py functions: 
+1 - single S3 upload file function with type -> upload image, video, track, voiceover respectively in subfolders "images", "videos", "tracks", "voiceovers" on the S3, under the given project directory based an argument passed in lib ("type" image, video, track, voiceover, maybe more to come...).
+2 - Backend information upload (file url from S3, any given parameter or key (e.g. style, prompts, project_type, music_video_type, etc....), with given bools. lists etc...) detailed in somewhere (schemas I believe?). Images, videos, tracks, voiceovers, scripts may be saved as lists or dictionnaries, I don't know what's the most efficient here, given that most projects will basically be composed of several scenes
+ with image prompt / video prompt(s), image url, video url, voiceover url, and tracks would be lists as well playing over multiple scenes.
+3 - Json Information upload (within S3 project root directory, mirroring the information from the database).
+4 - Local storage information upload (mirroring the information from teh database, information for the current project being modified for quick refreshs).
+
+5 - (main function) update project data function -> Basically uploading the data at any step, refresh, page closure etc... the data should basically be merged with the existing one, avoiding uploading existing untouched data to optimize performance and costs.
+
+-----------------------------------------------------------------
+Lib:
+-----------------------------------------------------------------
+
+
+### AUTO-SAVE SERVICE
+**File:** `auto-save-service.ts`
+
+Provides automatic saving functionality for projects with queue management.
+
+**Key Features:**
+- Schedule project saves with debouncing
+- Flush all pending saves
+- Queue status monitoring
+- Data persistence on page refresh
+
+**Usage:**
+```typescript
+import { autoSaveService } from './auto-save-service';
+
+// Schedule a save
+autoSaveService.scheduleSave(projectId, data);
+
+// Get queue status
+const status = autoSaveService.getQueueStatus();
+```
+
+
+-----------------------------------------------------------------
+Hooks:
+-----------------------------------------------------------------
+
+# Unified Storage System
+
+This document describes the unified storage system that supports multiple project types with a single, consistent implementation.
+
+## Overview
+
+The unified storage system provides a single approach to managing different types of projects (music-clip, video-edit, audio-edit, image-edit, custom) with type-specific configurations and operations.
+
+## Architecture
+
+
+### `useAudioMemoryManagement`
+Manages audio memory allocation and cleanup for optimal performance.
+
+### `useDataPersistence`
+Handles data persistence operations and state synchronization.
+
+### `useFileUploadHandlers`
+Manages file upload operations and progress tracking.
+
+### `useMusicTracks`
+Handles music track management and operations.
+
+### `useProjectLoading`
+Manages project loading states and operations.
+
+### `useProjectManagement`
+Core project management functionality and state.
+
+### `useProjects`
+Project listing and basic project operations.
+
+### `useUrlStorageIntegration`
+Integrates URL-based storage with application state.
+
+
+-----------------------------------------------------------------
+Routers:
+-----------------------------------------------------------------
+
+## Files
+
+- `storage.py` - Unified storage router supporting all project types
+- `__init__.py` - Router exports
+
+## Architecture
+
+The storage router follows clean architecture principles:
+
+- **Router Layer**: Handles only HTTP concerns (request/response, validation, error handling)
+- **Service Layer**: Contains all business logic in `api.services.storage`
+- **Clean Separation**: No business logic in routers, all operations delegated to services
+- **Type Safety**: Project type validation and configuration
+- **Unified Implementation**: Single router for all project types
+
+## Unified Storage Router
+
+### Project Management
+- `POST /api/storage/projects` - Create project (any type)
+- `GET /api/storage/projects` - List projects (optionally filtered by type)
+- `GET /api/storage/projects/{project_id}` - Get project details
+- `PUT /api/storage/projects/{project_id}` - Update project
+- `DELETE /api/storage/projects/{project_id}` - Delete project
+
+### Project Data Management
+- `POST /api/storage/projects/{project_id}/data` - Save project data
+- `GET /api/storage/projects/{project_id}/data` - Load project data
+- `POST /api/storage/projects/{project_id}/metadata` - Save project metadata
+- `GET /api/storage/projects/{project_id}/metadata` - Load project metadata
+
+### File Operations
+- `POST /api/storage/projects/{project_id}/files/upload` - Upload file (any type)
+- `DELETE /api/storage/projects/{project_id}/files/{file_id}` - Delete file
+- `GET /api/storage/projects/{project_id}/files` - Get project files
+
+### Auto-Save
+- `POST /api/storage/projects/{project_id}/auto-save` - Auto-save project data
+
+### Utility Endpoints
+- `GET /api/storage/project-types` - Get supported project types
+- `GET /api/storage/storage/stats` - Get storage statistics
+
+
+-----------------------------------------------------------------
+Routers:
+-----------------------------------------------------------------
+
+## OVERVIEW
+
+The Storage Service is designed to handle file storage operations for multiple project types including music clips, video editing, audio editing, image editing, and custom projects. It provides a unified interface for file uploads, downloads, metadata management, and project data persistence.
+
+## ARCHITECTURE
+
+### Core Components
+
+- **StorageService**: Main service class handling all storage operations
+- **Project Configurations**: Type-specific settings for different project types
+- **S3 Integration**: AWS S3 compatible storage backend
+- **Path Generation**: Dynamic path creation based on project types and user structure
+
+### Project Type Support
+
+| Project Type | Storage Prefix | Max File Size | Supported Operations |
+|--------------|----------------|---------------|---------------------|
+| music-clip   | music-clip     | 50MB          | upload, generate, analyze, export |
+| video-edit   | video-edit     | 500MB         | upload, edit, render, export |
+| audio-edit   | audio-edit     | 100MB         | upload, edit, mix, export |
+| image-edit   | image-edit     | 20MB          | upload, edit, filter, export |
+| custom       | custom         | 100MB         | upload, process, export |
+
+## FEATURES
+
+### File Management
+- **Upload Operations**: Direct file uploads with validation
+- **Download Operations**: Secure file retrieval with presigned URLs
+- **File Validation**: Type and size validation per project type
+- **Metadata Handling**: Rich metadata support for uploaded files
+
+### Project Data Management
+- **Data Persistence**: JSON-based project data storage
+- **Metadata Storage**: Project configuration and settings
+- **Script Storage**: Project script persistence
+- **Export Management**: Organized export file handling
+
+### Security & Access
+- **Presigned URLs**: Time-limited secure access to files
+- **User Isolation**: User-specific storage paths
+- **Project Isolation**: Project-specific file organization

@@ -1,0 +1,29 @@
+{
+  "file_id": "3e44b6a2-95b6-436f-98f4-965f69b86d79",
+  "project_id": "36945a82-ba25-4bcf-837c-4c6f1b8b9503",
+  "file_type": "track",
+  "metadata": {
+    "filename": "gen_1760151144.wav",
+    "file_type": "track",
+    "size_bytes": 2092,
+    "content_type": "audio/wav",
+    "duration": null,
+    "resolution": null,
+    "format": null,
+    "sample_rate": null,
+    "channels": null,
+    "bitrate": null,
+    "aspect_ratio": null,
+    "custom_metadata": null
+  },
+  "s3_key": "users/d517ffb8-dc40-5e27-8d4f-13e6a23c7547/projects/36945a82-ba25-4bcf-837c-4c6f1b8b9503/tracks/gen_1760151144.wav",
+  "created_at": "2025-10-17T22:50:18.328280",
+  "additional_data": {
+    "ai_generated": false,
+    "prompt": null,
+    "genre": null,
+    "instrumental": false,
+    "video_description": null,
+    "title": "gen_1760151144.wav"
+  }
+}

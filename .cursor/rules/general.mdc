@@ -1,0 +1,58 @@
+---
+alwaysApply: true
+---
+Never run npm run dev. The system always run when prompted (backend, frontend, database etc...). You may ensure if the backend is running if necessary, but don't un it again.
+Don't implement legacy systems, the goal is to have a unique implementation throughout the project.
+Don't implement mock data. Errors should be used when something is not loaded / functionning properly.
+
+### Full-Stack Architecture
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend API   │    │   AI Services   │
+│   Next.js 14    │◄──►│   FastAPI       │◄──►│   ComfyUI       │
+│   React 18      │    │   SQLAlchemy    │    │   RunPod        │
+│   TypeScript    │    │   PostgreSQL    │    │   ProducerAI    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### Frontend Structure
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── dashboard/         # Protected user dashboard
+│   ├── create/            # Content creation workflows
+│   ├── projects/          # Project management
+│   └── auth/              # Authentication
+├── components/            # React components
+│   ├── ui/               # shadcn/ui base components
+│   ├── forms/            # Form components
+│   └── layout/           # Layout components
+├── hooks/                # Custom React hooks
+│   ├── ai/               # AI integration hooks
+│   ├── storage/          # Data persistence hooks
+│   └── business/         # Business logic hooks
+├── contexts/             # React Context providers
+├── lib/                  # API clients and utilities
+└── types/                # TypeScript definitions
+```
+
+### Backend Structure
+```
+api/
+├── config/               # Configuration management
+├── data/                 # Database and storage
+├── middleware/           # Request processing
+├── models/               # SQLAlchemy models
+├── routers/              # API endpoints
+├── services/             # Business logic
+├── schemas/              # Pydantic validation
+└── workflows/            # Process orchestration
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ and npm
+- Python 3.11+
+- PostgreSQL 14+
+- Redis (optional, for caching)

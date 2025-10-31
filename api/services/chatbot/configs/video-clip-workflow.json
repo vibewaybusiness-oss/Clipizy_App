@@ -1,0 +1,250 @@
+{
+  "id": "video_clip_workflow",
+  "name": "Video Clip",
+  "description": "Create a short video clip with AI-generated content",
+  "initialStep": "llm_health",
+  "globalSettings": {
+    "autoSave": true,
+    "errorHandling": "stop",
+    "timeout": 30000
+  },
+  "steps": {
+    "llm_health": {
+      "id": "llm_health",
+      "stepNumber": 1,
+      "bricks": [
+        {
+          "id": "llm-pod-signal",
+          "type": "api_call",
+          "endpoint": "/api/v1/ai/runpod/signal-pod",
+          "method": "POST",
+          "payload": {
+            "source": "static",
+            "staticData": {"workflow": "llm-ollama"}
+          },
+          "response": {
+            "saveConfig": {
+              "key": "llmPodSignal",
+              "type": "object",
+              "backendKey": "settings",
+              "backendType": "dict"
+            }
+          }
+        }
+      ],
+      "nextStep": "video_description",
+      "autoSave": true
+    },
+    "video_description": {
+      "id": "video_description",
+      "stepNumber": 2,
+      "bricks": [
+        {
+          "id": "video-description-input",
+          "type": "user_input",
+          "inputType": "text",
+          "saveConfig": {
+            "key": "videoDescription",
+            "type": "string",
+            "backendKey": "settings",
+            "backendType": "dict"
+          },
+          "label": "Video Description",
+          "placeholder": "Describe the visual style and content for your video...",
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "id": "video-description-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate description with AI",
+              "action": "generateVideoDescriptionWithAI",
+              "returnValue": "ai_description",
+              "variant": "default"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Great! Let's describe the visual style and content for your video. What kind of visuals do you want to see?",
+            "showDelay": 1200,
+            "enableFileInput": false,
+            "enablePromptInput": true
+          }
+        }
+      ],
+      "nextStep": "reference_images",
+      "autoSave": true
+    },
+    "reference_images": {
+      "id": "reference_images",
+      "stepNumber": 3,
+      "bricks": [
+        {
+          "id": "reference-images-upload",
+          "type": "user_input",
+          "inputType": "file",
+          "saveConfig": {
+            "key": "referenceImages",
+            "type": "dict",
+            "backendKey": "referenceImages",
+            "backendType": "dict"
+          },
+          "label": "Upload reference images",
+          "accept": "image/*",
+          "multiple": true,
+          "maxFiles": 10,
+          "validation": {
+            "required": false
+          }
+        },
+        {
+          "id": "reference-images-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Skip reference images",
+              "action": "skipReferenceImages",
+              "returnValue": "skip",
+              "variant": "outline"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "You can upload reference images to help guide the visual style of your video, or skip this step.",
+            "showDelay": 1200,
+            "enableFileInput": true,
+            "enablePromptInput": false
+          }
+        }
+      ],
+      "nextStep": "reference_image_description",
+      "autoSave": true
+    },
+    "reference_image_description": {
+      "id": "reference_image_description",
+      "stepNumber": 4,
+      "bricks": [
+        {
+          "id": "image-description-input",
+          "type": "user_input",
+          "inputType": "text",
+          "saveConfig": {
+            "key": "imageDescription",
+            "type": "string",
+            "backendKey": "settings",
+            "backendType": "dict"
+          },
+          "label": "Image Description",
+          "placeholder": "Describe the style and content of your reference images...",
+          "validation": {
+            "required": false
+          }
+        },
+        {
+          "id": "image-description-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate description with AI",
+              "action": "generateImageDescriptionWithAI",
+              "returnValue": "ai_description",
+              "variant": "default"
+            },
+            {
+              "label": "Skip description",
+              "action": "skipImageDescription",
+              "returnValue": "skip",
+              "variant": "outline"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Describe the style and content of your reference images to help guide the video generation.",
+            "showDelay": 1200,
+            "enableFileInput": false,
+            "enablePromptInput": true
+          }
+        }
+      ],
+      "nextStep": "video_styles",
+      "autoSave": true
+    },
+    "video_styles": {
+      "id": "video_styles",
+      "stepNumber": 5,
+      "bricks": [
+        {
+          "id": "style-selection",
+          "type": "user_input",
+          "inputType": "multiselect",
+          "saveConfig": {
+            "key": "selectedStyles",
+            "type": "array",
+            "backendKey": "settings",
+            "backendType": "dict"
+          },
+          "label": "Select Video Styles",
+          "options": [
+            { "label": "Cinematic", "value": "cinematic" },
+            { "label": "Animated", "value": "animated" },
+            { "label": "Realistic", "value": "realistic" },
+            { "label": "Abstract", "value": "abstract" },
+            { "label": "Minimalist", "value": "minimalist" },
+            { "label": "Vintage", "value": "vintage" }
+          ],
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "id": "style-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate video",
+              "action": "generateVideo",
+              "returnValue": "generate",
+              "variant": "default"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Select the visual styles you want for your video. You can choose multiple styles.",
+            "showDelay": 1200,
+            "enableFileInput": false,
+            "enablePromptInput": false
+          }
+        }
+      ],
+      "nextStep": "completed",
+      "autoSave": true
+    },
+    "completed": {
+      "id": "completed",
+      "stepNumber": 6,
+      "bricks": [
+        {
+          "id": "completion-message",
+          "type": "llm",
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Your video clip workflow is complete! Your video is being generated and will be available shortly.",
+            "showDelay": 0,
+            "enableFileInput": false,
+            "enablePromptInput": false
+          }
+        }
+      ],
+      "nextStep": "completed",
+      "autoSave": true
+    }
+  }
+}

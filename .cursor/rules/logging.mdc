@@ -1,0 +1,7 @@
+---
+description: Logging in errors, debug, and simple prints within the code
+alwaysApply: false
+---
+
+
+All loggers should be based on the config/logging.py centralized logger.

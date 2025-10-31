@@ -1,0 +1,237 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 1118373971686357,
+      "steps": 4,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "66",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "58",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "A hyperrealistic, cinematic loop of a girl smoking in a retro lounge bar. Wide eye-level dolly-in shot, steadycam glide with rule of thirds composition. The girl reclines in a leather chair, gracefully taking a slow drag from her cigarette, exhaling smoke that swirls fluidly upward. The smoke curls and reconnects at the loop’s start, seamlessly cycling. The bar is dimly lit with amber sconces, velvet seating, neon reflections, and a haze of tobacco smoke. Atmosphere is moody and contemplative, evoking noir intimacy. Hyper-detailed textures: glowing cigarette ember, glass ashtray, fleather upholstery. Lighting in chiaroscuro style with soft rim light and anamorphic lens effects. Warm muted palette with faint neon blue reflections. Cinematic realism with smooth motion, subtle grain, and no flickering.",
+      "clip": [
+        "38",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Positive Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "38",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Negative Prompt)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "38": {
+    "inputs": {
+      "clip_name": "qwen_2.5_vl_7b.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Load CLIP"
+    }
+  },
+  "39": {
+    "inputs": {
+      "vae_name": "qwen_image_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "58": {
+    "inputs": {
+      "width": 1280,
+      "height": 720,
+      "batch_size": 1
+    },
+    "class_type": "EmptySD3LatentImage",
+    "_meta": {
+      "title": "EmptySD3LatentImage"
+    }
+  },
+  "66": {
+    "inputs": {
+      "shift": 3,
+      "model": [
+        "75",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingAuraFlow",
+    "_meta": {
+      "title": "ModelSamplingAuraFlow"
+    }
+  },
+  "75": {
+    "inputs": {
+      "lora_name": "Qwen-Image-Lightning-4steps-V2.0.safetensors",
+      "strength_model": 1,
+      "model": [
+        "109",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoraLoaderModelOnly"
+    }
+  },
+  "77": {
+    "inputs": {
+      "file_path": [
+        "102",
+        0
+      ],
+      "s3_key": [
+        "102",
+        0
+      ],
+      "bucket": "clipizy-dev",
+      "region": "eu-north-1",
+      "auth_mode": "boto3",
+      "presign_endpoint": "",
+      "presign_method": "POST",
+      "presign_headers_json": "",
+      "content_type": "https://api.yourapp.com/storage/presign",
+      "force_type": "auto"
+    },
+    "class_type": "S3UploadMedia",
+    "_meta": {
+      "title": "S3 Upload File"
+    }
+  },
+  "102": {
+    "inputs": {
+      "input_path": [
+        "103",
+        10
+      ],
+      "overwrite": false,
+      "image": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "S3SaveImageExportPath",
+    "_meta": {
+      "title": "Save Image Export Path"
+    }
+  },
+  "103": {
+    "inputs": {
+      "line_1": "users",
+      "label_1": "users_dir",
+      "line_2": "test",
+      "label_2": "user_id",
+      "line_3": "projects/music-clip",
+      "label_3": "projects_type_dirs",
+      "line_4": "test",
+      "label_4": "project_id",
+      "line_5": "images",
+      "label_5": "media_type",
+      "line_6": "image.png",
+      "label_6": "filename",
+      "line_7": "",
+      "label_7": "Line 7",
+      "line_8": "",
+      "label_8": "Line 8",
+      "line_9": "",
+      "label_9": "Line 9",
+      "line_10": "",
+      "label_10": "Line 10",
+      "output_mode": "concatenate",
+      "delimiter": "/"
+    },
+    "class_type": "MultiLineTextInput",
+    "_meta": {
+      "title": "Multi-Line Text Input"
+    }
+  },
+  "106": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "108": {
+    "inputs": {
+      "output": "",
+      "source": [
+        "77",
+        1
+      ]
+    },
+    "class_type": "Display Any (rgthree)",
+    "_meta": {
+      "title": "Display Any (rgthree)"
+    }
+  },
+  "109": {
+    "inputs": {
+      "unet_name": "Qwen-Image-Edit-2509-Q8_0.gguf"
+    },
+    "class_type": "UnetLoaderGGUF",
+    "_meta": {
+      "title": "Unet Loader (GGUF)"
+    }
+  }
+}

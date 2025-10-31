@@ -1,0 +1,48 @@
+{
+  "workflow": "music-clip",
+  "description": "Expanded LLM prompts for an AI-driven music clip generation workflow — including lyrics, music, video descriptions, scene segmentation, and image analysis.",
+  "prompts": {
+    "generate-lyrics": {
+      "template": "Generate complete and emotionally engaging song lyrics.\n\nMusic description: {description}\n\nGenre: {genre}\n\nTask: Write full lyrics that reflect the tone, rhythm, and atmosphere implied by the description and genre.\n\nGuidelines:\n- Structure clearly (verses, chorus, bridge, outro if needed).\n- Capture emotional depth and narrative consistency.\n- Ensure rhythm and phrasing match the implied tempo and energy of the genre.\n- Use imagery and metaphor where fitting but avoid overcomplex language.\n- Keep it suitable for a music video — visually and emotionally evocative.\n\n{optional_instructions}",
+      "model": null,
+      "timeout_seconds": 300,
+      "description": "Generate complete lyrics reflecting the genre, tone, and narrative."
+    },
+    "generate-music": {
+      "template": "Create a comprehensive prompt for AI music generation.\n\nDescription: {description}\nGenre: {genre}\nInstrumental: {is_instrumental}\nLyrics (if any): {lyrics}\n\nInclude:\n- Musical structure (intro, verse, chorus, bridge, outro)\n- Key instrumentation and arrangement choices (list instruments and textures)\n- Style references (e.g., similar artists, eras, or production styles)\n- Tonal and emotional qualities (e.g., melancholic, euphoric, cinematic)\n- Tempo, rhythm, and groove suggestions\n- Audio aesthetic (e.g., lo-fi, polished pop, analog warmth, digital clarity)\n\nSummarize in 3-5 vivid sentences that describe the intended sound, emotional tone, and energy, suitable for an AI music generation model.",
+      "model": null,
+      "timeout_seconds": 300,
+      "description": "Generate detailed, structured music generation prompt for AI composition."
+    },
+    "generate-video-description": {
+      "template": "Generate a detailed and cinematic video description for a music video.\n\nMusic description: {description}\nVisual style preferences: {visual_style}\nReference images context: {image_description}\n\nInclude:\n- Overall concept and story arc (if narrative-based)\n- Scene composition and transitions (how visual flow matches music dynamics)\n- Lighting, color palette, and atmosphere (consistent with mood)\n- Visual style references (e.g., surrealist, gritty realism, vaporwave)\n- Camera movement, framing, and pacing (close-ups, slow pans, handheld, etc.)\n- Editing rhythm tied to the music's tempo and beat structure\n\nMake it cinematic, emotionally resonant, and visually distinctive — ready for AI video generation.",
+      "model": null,
+      "timeout_seconds": 300,
+      "description": "Generate a complete video concept for a music video with detailed visual storytelling."
+    },
+    "generate-scene-list": {
+      "template": "Generate a structured list of key scenes for a music video.\n\nBase on the given music description, analysis, and lyrics.\n\nInclude:\n- Scene-by-scene breakdown matching the music's progression (intro, verses, chorus, bridge, outro)\n- Key visual moments or emotional peaks tied to musical changes\n- Suggested settings, lighting, and transitions for each scene\n- Visual motifs or recurring elements that reinforce the song's theme\n\nOutput as a numbered list with short descriptive summaries for each scene.\nFocus on narrative flow, tone continuity, and pacing that aligns with the music.",
+      "model": null,
+      "timeout_seconds": 300,
+      "description": "Generate structured scene breakdown for a music video aligned with the song's flow."
+    },
+    "generate-segment-scene": {
+      "template": "Generate a detailed visual description for a specific music segment.\n\nInput includes segment analysis and time range.\n\nProvide:\n- Scene content and emotional focus for the segment\n- Visual composition, lighting, and motion\n- Color tone, texture, and atmosphere\n- How this moment fits into the overall visual narrative\n\nKeep it highly descriptive yet concise — suitable for AI video generation corresponding precisely to the given segment.",
+      "model": null,
+      "timeout_seconds": 300,
+      "description": "Generate a focused scene description for a specific musical segment."
+    },
+    "generate-segment-lyrics": {
+      "template": "Generate lyrics specifically for a segment of the music track.\n\nContext: Segment analysis and musical mood are provided separately.\n\nGuidelines:\n- Match the lyrical rhythm, phrasing, and tone to the segment's mood and tempo.\n- Ensure lyrical continuity with prior or following segments.\n- Reflect the music's emotional movement — rising tension, climax, or resolution.\n- Use natural phrasing that aligns with the melody or instrumental pattern.\n\nOutput short, impactful lyrics suitable for the given segment, consistent with the overall song theme.",
+      "model": null,
+      "timeout_seconds": 300,
+      "description": "Generate lyrics aligned to a specific segment of the music based on its mood and rhythm."
+    },
+    "generate-image-description": {
+      "template": "Analyze and describe an image in rich visual detail.\n\nInput: Image from a music video project.\n\nProvide:\n- Detailed visual description: setting, composition, subjects, objects, lighting, textures, and color palette.\n- Emotional tone and atmosphere suggested by the image.\n- Camera characteristics (angle, depth of field, framing, motion implication).\n- Artistic or cinematic style (e.g., painterly, surreal, high-contrast, minimalistic).\n- Potential use case for the music video — where or how this image would fit (e.g., opening shot, bridge sequence, emotional climax).\n\nOutput should be precise, vivid, and neutral in tone — suitable for vision-language understanding or metadata generation.",
+      "model": null,
+      "timeout_seconds": 300,
+      "description": "Generate a detailed visual and contextual description of an image for music video analysis or placement."
+    }
+  }
+}

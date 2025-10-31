@@ -1,0 +1,299 @@
+---
+description: Any change to the Backend
+alwaysApply: false
+---
+# Clipizy Backend API
+
+A comprehensive, scalable FastAPI backend for music clip generation and content creation with AI/ML integration.
+
+## 🏗️ Architecture Overview
+
+The API is built with a modular, layered architecture that promotes separation of concerns, maintainability, and scalability:
+
+```
+api/
+├── config/          # 🔧 Configuration & Logging System
+├── data/            # 💾 Database & Storage Layer  
+├── middleware/      # 🛡️ Request Processing & Security
+├── models/          # 📊 Database Models & Relationships
+├── routers/         # 🛣️ API Endpoint Organization
+├── routes/          # 🔗 Legacy Route Implementations
+├── schemas/         # ✅ Request/Response Validation
+├── scripts/         # 🔧 Database Optimization & Maintenance
+├── services/        # ⚙️ Business Logic & Dependency Injection
+└── workflows/       # 🔄 Workflow Orchestration & Management
+```
+
+
+## 📁 Module Documentation
+
+### 🔧 [Configuration System](./config/README.md)
+**Centralized configuration management with service integration**
+- Environment-specific settings
+- Configuration validation and hot reloading
+- Centralized logging system
+- Configuration decorators for easy access
+
+**Key Features:**
+- Single source of truth for all settings
+- Service-integrated configuration manager
+- Structured logging with automatic file routing
+- FastAPI integration decorators
+
+### 💾 [Data Layer](./data/README.md)
+**Unified database and storage operations**
+- SQLAlchemy ORM with connection pooling
+- S3 storage with local fallback
+- File metadata extraction and analysis
+- Input sanitization and validation
+
+**Key Features:**
+- Database connection management
+- Storage service abstraction
+- Media processing and analysis
+- Comprehensive error handling
+
+### 🛡️ [Middleware System](./middleware/README.md)
+**Request processing, security, and monitoring**
+- Authentication and authorization
+- Rate limiting and throttling
+- Input sanitization and validation
+- Security headers and CORS
+- Request monitoring and metrics
+
+**Key Features:**
+- JWT-based authentication
+- Role-based access control
+- Comprehensive security measures
+- Performance monitoring
+
+### 📊 [Database Models](./models/README.md)
+**SQLAlchemy models with relationships and validation**
+- User management and authentication
+- Project and content organization
+- Media file management
+- Payment and credits system
+- AI/ML workflow tracking
+
+**Key Features:**
+- UUID primary keys for security
+- Comprehensive relationships
+- Built-in validation
+- Strategic indexing
+
+### 🛣️ [Router System](./routers/README.md)
+**Organized API endpoints with architecture management**
+- Modular router organization
+- Router registry and factory patterns
+- Health checks and monitoring
+- Standardized error handling
+
+**Key Features:**
+- Category-based organization
+- Dependency management
+- Health monitoring
+- Performance metrics
+
+### 🔗 [Routes System](./routes/README.md)
+**Legacy route implementations and specific endpoints**
+- ProducerAI integration
+- Music clip generation
+- Legacy compatibility layer
+
+**Key Features:**
+- Legacy code bridge
+- Specific endpoint implementations
+- Service integration
+
+### ✅ [Schema System](./schemas/README.md)
+**Pydantic models for validation and documentation**
+- Request/response validation
+- Automatic API documentation
+- Type safety and serialization
+- Comprehensive validation rules
+
+**Key Features:**
+- Automatic validation
+- API documentation generation
+- Type safety
+- Error handling
+
+### 🔧 [Scripts System](./scripts/README.md)
+**Database optimization and maintenance utilities**
+- Database performance analysis
+- Index optimization
+- Query performance tuning
+- Maintenance automation
+
+**Key Features:**
+- Performance optimization
+- Automated maintenance
+- Health monitoring
+- Reporting and analytics
+
+### ⚙️ [Services System](./services/README.md)
+**Business logic with dependency injection**
+- Unified service architecture
+- Dependency injection container
+- Service lifecycle management
+- Comprehensive utilities
+
+**Key Features:**
+- Service registry and factory
+- Health checks and monitoring
+- Error handling and retry logic
+- Performance metrics
+
+### 🔄 [Workflows System](./workflows/README.md)
+**Workflow orchestration and management**
+- Complex business process automation
+- AI/ML workflow management
+- Content generation pipelines
+- Workflow monitoring and recovery
+
+**Key Features:**
+- Workflow orchestration
+- Pipeline management
+- Error handling and recovery
+- Progress monitoring
+
+## 🔗 System Integration
+
+### Configuration Flow
+```
+Environment Variables → Config Manager → Services → API Endpoints
+```
+
+### Request Flow
+```
+Client Request → Middleware → Router → Service → Data Layer → Response
+```
+
+### Service Dependencies
+```
+Services ←→ Configuration ←→ Logging ←→ Data Layer
+```
+
+## 🛠️ Development Workflow
+
+### Adding New Features
+1. **Models**: Define data structure in `models/`
+2. **Schemas**: Create validation schemas in `schemas/`
+3. **Services**: Implement business logic in `services/`
+4. **Routers**: Add API endpoints in `routers/`
+5. **Configuration**: Add settings in `config/`
+
+### Testing
+```bash
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=api
+
+# Run specific module tests
+pytest api/tests/test_services/
+```
+
+### Database Management
+```bash
+# Create migration
+alembic revision --autogenerate -m "Description"
+
+# Apply migrations
+alembic upgrade head
+
+# Optimize database
+python api/scripts/optimize_database.py
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/clipizy
+DB_POOL_SIZE=10
+
+# Security
+SECRET_KEY=your-secret-key
+JWT_ALGORITHM=HS256
+
+# Storage
+S3_BUCKET=clipizy
+S3_ACCESS_KEY=your-access-key
+
+# Logging
+LOG_LEVEL=INFO
+ENABLE_CONSOLE_LOGGING=true
+```
+
+### Configuration Files
+- `config/json/development.json` - Development settings
+- `config/json/production.json` - Production settings
+- `config/json/database.json` - Database configuration
+- `config/json/storage.json` - Storage configuration
+
+## 📊 Monitoring & Health Checks
+
+### Health Endpoints
+- `GET /health` - Basic health check
+- `GET /health/detailed` - Detailed health information
+- `GET /health/database` - Database health
+- `GET /health/storage` - Storage health
+- `GET /metrics` - Application metrics
+
+### Logging
+- **Console Logging**: Development and debugging
+- **File Logging**: Production logging with rotation
+- **Structured Logging**: JSON-formatted logs for analysis
+- **Service-Specific Logs**: Separate logs for different components
+
+## 🚀 Deployment
+
+### Docker
+```dockerfile
+FROM python:3.11-slim
+COPY api/ /app/api/
+WORKDIR /app
+RUN pip install -r requirements.txt
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+### Environment-Specific Deployment
+- **Development**: Full logging, debug mode, local services
+- **Staging**: Production-like with test data
+- **Production**: Optimized performance, security hardening
+
+## 🔒 Security Features
+
+- **Authentication**: JWT-based with refresh tokens
+- **Authorization**: Role-based access control
+- **Input Validation**: Comprehensive input sanitization
+- **Rate Limiting**: Per-user and per-IP limits
+- **Security Headers**: HSTS, CSP, X-Frame-Options
+- **Data Encryption**: Sensitive data encryption at rest
+
+## 📈 Performance Features
+
+- **Connection Pooling**: Efficient database connections
+- **Caching**: Redis-based caching system
+- **Async Operations**: Non-blocking I/O operations
+- **Query Optimization**: Database query optimization
+- **Load Balancing**: Horizontal scaling support
+
+## 🤝 Contributing
+
+1. **Fork the repository**
+2. **Create a feature branch**
+3. **Follow the architecture patterns**
+4. **Add comprehensive tests**
+5. **Update documentation**
+6. **Submit a pull request**
+
+### Code Standards
+- Follow PEP 8 style guidelines
+- Use type hints for all functions
+- Write comprehensive docstrings
+- Add unit tests for new features
+- Update README files for changes

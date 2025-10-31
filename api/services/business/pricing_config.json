@@ -1,0 +1,120 @@
+{
+  "credits_rate": 20,
+  "pricing": {
+    "music_generator": {
+      "stable-audio": {
+        "price": 0.5,
+        "description": "Generate a music track based on the description."
+      },
+      "clipizy-model": {
+        "price": 1.0,
+        "description": "Generate a music track based on the description."
+      }
+    },
+    "image_generator": {
+      "clipizy-model": {
+        "minute_rate": 0.10,
+        "unit_rate": 0.50,
+        "min": 3,
+        "max": null,
+        "description": "Generate an image based on the description."
+      }
+    },
+    "looped_animation_generator": {
+      "clipizy-model": {
+        "minute_rate": 0.11,
+        "unit_rate": 1,
+        "min": 3,
+        "max": null,
+        "description": "Generate a looping animation based on the description."
+      }
+    },
+    "recurring_scenes_generator": {
+      "clipizy-model": {
+        "minute_rate": 0.15,
+        "unit_rate": 1.5,
+        "min": 5,
+        "max": null,
+        "description": "Generate recurring scenes that repeat throughout the video."
+      }
+    },
+    "video_generator": {
+      "clipizy-model": {
+        "minute_rate": 0.15,
+        "min": 5,
+        "max": null,
+        "description": "Generate a video based on the description."
+      }
+    },
+    "scenes_generator": {
+      "clipizy-model": {
+        "cost_per_scene": 0.40,
+        "duration_rate": 0.15,
+        "duration_rate_with_visualizer": 0.30,
+        "description": "Generate scenes based on number of scenes and duration."
+      }
+    },
+    "video_regenerator": {
+      "clipizy-model": {
+        "duration_rate": 0.05,
+        "description": "Regenerate a video based on the description."
+      }
+    },
+    "image_regenerator": {
+      "clipizy-model": {
+        "minute_rate": 0.01,
+        "description": "Regenerate an image based on the description."
+      }
+    },
+    "visualizer": {
+      "duration_rate_additional": 0.30,
+      "description": "Additional cost per minute when visualizer is enabled."
+    }
+  },
+  "subscription_plans": {
+    "basic": {
+      "name": "Basic Plan",
+      "price": 9.99,
+      "credits_per_month": 1000,
+      "stripe_price_id": "price_basic_plan"
+    },
+    "pro": {
+      "name": "Pro Plan", 
+      "price": 19.99,
+      "credits_per_month": 2500,
+      "stripe_price_id": "price_pro_plan"
+    },
+    "enterprise": {
+      "name": "Enterprise Plan",
+      "price": 49.99,
+      "credits_per_month": 7500,
+      "stripe_price_id": "price_enterprise_plan"
+    }
+  },
+  "credits_packages": {
+    "small": {
+      "name": "Small Package",
+      "price": 4.99,
+      "credits": 500,
+      "stripe_price_id": "price_small_package"
+    },
+    "medium": {
+      "name": "Medium Package",
+      "price": 9.99,
+      "credits": 1200,
+      "stripe_price_id": "price_medium_package"
+    },
+    "large": {
+      "name": "Large Package",
+      "price": 19.99,
+      "credits": 2800,
+      "stripe_price_id": "price_large_package"
+    },
+    "xlarge": {
+      "name": "Extra Large Package",
+      "price": 39.99,
+      "credits": 6000,
+      "stripe_price_id": "price_xlarge_package"
+    }
+  }
+}

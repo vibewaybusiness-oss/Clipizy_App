@@ -1,0 +1,41 @@
+🔍 Checking database health before starting FastAPI...
+🗄️  Using database URL: postgresql://postgres:postgres@localhost:5432/clipizy
+✅ Database connection successful (attempt 1)
+✅ PostgreSQL database is ready.
+🔧 Creating/verifying database tables...
+✅ Database tables created/verified
+🚀 Starting FastAPI server...
+21:51:31 - ERROR - ⚠️  Could not create bucket clipizy-storage: An error occurred (InvalidAccessKeyId) when calling the CreateBucket operation: The AWS Access Key Id you provided does not exist in our records.
+21:51:31 - INFO - FileService initialized with bucket: clipizy-storage
+21:51:31 - INFO - ✅ Centralized storage services initialized successfully
+21:51:32 - ERROR - Failed to load prompts from /root/clipizy/api/config/prompts_random.json: [Errno 2] No such file or directory: '/root/clipizy/api/config/prompts_random.json'
+21:51:32 - ERROR - Failed to load prompt rules from /root/clipizy/api/config/prompt_rules.json: [Errno 2] No such file or directory: '/root/clipizy/api/config/prompt_rules.json'
+✅ ML libraries loaded successfully: numpy=2.0.0, librosa=0.11.0
+🔍 Trying to import music_analyzer from: /root/clipizy/api/services/ai/../../workflows/analyzer
+✅ Successfully imported analyze_audio_bytes from music_analyzer
+Music analyzer ML libraries loaded: librosa=0.11.0, numpy=2.0.0
+21:51:32 - INFO - CreditsService initialized
+21:51:32 - INFO - StripeService initialized
+21:51:32 - INFO - AuthService initialized
+21:51:32 - INFO - UserCreationService initialized
+21:51:32 - ERROR - Failed to load Google OAuth credentials: [Errno 2] No such file or directory: 'api/config/client_secret_google_api.json'
+21:51:32 - INFO - UserManagementService initialized
+Could not initialize data layer connections: name 'storage_service' is not defined
+INFO:     Started server process [199754]
+INFO:     Waiting for application startup.
+No configuration found for router 'producer', using default
+No configuration found for router 'producer_music_clip', using default
+INFO:     Application startup complete.
+ERROR:    [Errno 98] error while attempting to bind on address ('0.0.0.0', 8000): address already in use
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+Warning: bleach not available. Install with: pip install bleach
+🚀 Starting clipizy API with sophisticated architecture...
+✅ Database tables created/verified
+✅ Queue manager started for AI workflows
+✅ All routers registered with sophisticated architecture
+✅ All routers registered with sophisticated architecture
+✅ Router architecture validation passed
+🔍 DEBUG: PodManager initialized with client: <httpx.AsyncClient object at 0x75bed3c59900>
+🛑 Shutting down clipizy API...
+✅ Queue manager cleaned up

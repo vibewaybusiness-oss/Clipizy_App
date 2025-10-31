@@ -1,0 +1,5 @@
+---
+description: When debugging errors and fixing files
+alwaysApply: false
+---
+To check for errors in the codebase, rely on the @root/logs directory. Avoid creating new files, rather check the readme either in the front or backend to understand teh code structure and get where the code may have been moved (follo9wing a structural refactoring) or may exist.

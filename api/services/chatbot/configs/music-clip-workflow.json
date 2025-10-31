@@ -1,0 +1,597 @@
+{
+  "id": "music_clip_workflow",
+  "name": "Music Video Clip",
+  "description": "Create a music video clip with AI-generated visuals",
+  "initialStep": "llm_health",
+  "globalSettings": {
+    "autoSave": true,
+    "errorHandling": "stop",
+    "timeout": 30000
+  },
+  "steps": {
+    "llm_health": {
+      "id": "llm_health",
+      "stepNumber": 1,
+      "bricks": [
+        {
+          "id": "llm-pod-signal",
+          "type": "api_call",
+          "endpoint": "/api/v1/ai/runpod/signal-pod",
+          "method": "POST",
+          "payload": {
+            "source": "static",
+            "staticData": {"workflow": "llm-ollama"}
+          },
+          "response": {
+            "saveConfig": {
+              "key": "llmPodSignal",
+              "type": "object",
+              "backendKey": "settings",
+              "backendType": "dict"
+            }
+          }
+        }
+      ],
+      "nextStep": "track_input",
+      "autoSave": true
+    },
+    "track_input": {
+      "id": "track_input",
+      "stepNumber": 1,
+      "bricks": [
+        {
+          "id": "track-upload-input",
+          "type": "user_input",
+          "inputType": "file",
+          "saveConfig": {
+            "key": "uploadedAudio",
+            "type": "array",
+            "backendKey": "tracks",
+            "backendType": "list"
+          },
+          "label": "Upload audio files",
+          "accept": "audio/*",
+          "multiple": true,
+          "maxFiles": 20,
+          "validation": {
+            "required": false
+          }
+        },
+        {
+          "id": "track-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate with AI",
+              "action": "generateTrackWithAI",
+              "returnValue": "ai_generation",
+              "variant": "default",
+              "userMessage": "I want to generate an AI track",
+              "nextStep": "track_ai_description"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Great! First, let's get your music track. You can either upload an audio file and quickly describe your creation (genre, mood, etc.). If you don't have an audio file, I can help you generate one.",
+            "showDelay": 1200,
+            "enableFileInput": true,
+            "enablePromptInput": true
+          }
+        }
+      ],
+      "nextStep": "track_ai_description",
+      "autoSave": true
+    },
+    "track_ai_description": {
+      "id": "track_ai_description",
+      "stepNumber": 2,
+      "bricks": [
+        {
+          "id": "request-music-description",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate Prompt",
+              "action": "generatePrompt",
+              "variant": "default",
+              "triggerBrick": "generate-music-prompt-backend"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Perfect! Let's create a custom track for you. Please describe your music track in detail (genre, mood, BPM, instruments, energy level, etc.).",
+            "showDelay": 1200,
+            "enableFileInput": false,
+            "enablePromptInput": true
+          }
+        },
+        {
+          "type": "api_call",
+          "id": "generate-music-prompt-backend",
+          "endpoint": "/api/ai/generate-music-prompt",
+          "method": "POST",
+          "payload": {
+            "user_input": "{{workflowData.userInput}}",
+            "project_id": "{{workflowData.project_id}}",
+            "genre": "{{workflowData.genre}}"
+          },
+          "waitForResponse": true,
+          "timeout": 60000,
+          "autoExecute": false,
+          "saveResponse": {
+            "key": "musicPromptData",
+            "path": "data"
+          },
+          "onSuccess": {
+            "nextBrick": "display-music-prompt"
+          },
+          "onError": {
+            "message": "Failed to generate music prompt. Please try again.",
+            "retryable": true
+          }
+        },
+        {
+          "type": "waiting_display",
+          "id": "wait-music-prompt",
+          "listenTo": "generate-music-prompt-backend",
+          "loadingMessage": "Analyzing your request and generating optimized music prompt...",
+          "estimatedTime": 15,
+          "showProgress": true,
+          "onResponse": {
+            "success": {
+              "displayAs": "text",
+              "message": "Music prompt generated!",
+              "nextBrick": "display-music-prompt"
+            },
+            "error": {
+              "message": "Failed to generate prompt. Please try again.",
+              "retryable": true
+            }
+          }
+        },
+        {
+          "type": "json_display",
+          "id": "display-music-prompt",
+          "dataSource": "workflowData.musicPromptData",
+          "display": {
+            "userFields": [
+              {
+                "key": "genre",
+                "label": "Genre",
+                "format": "text"
+              }
+            ],
+            "assistantFields": [
+              {
+                "key": "prompt",
+                "label": "Music Prompt",
+                "editable": true,
+                "format": "textarea"
+              }
+            ]
+          },
+          "actions": [
+            {
+              "label": "Regenerate Prompt",
+              "action": "regenerate",
+              "variant": "outline",
+              "triggerBrick": "generate-music-prompt-backend"
+            },
+            {
+              "label": "Validate & Continue",
+              "action": "validate",
+              "variant": "default",
+              "saveEdits": true,
+              "nextStep": "track_ai_lyrics"
+            }
+          ]
+        }
+      ],
+      "autoSave": true
+    },
+    "track_ai_lyrics": {
+      "id": "track_ai_lyrics",
+      "stepNumber": 3,
+      "bricks": [
+        {
+          "type": "api_call",
+          "id": "generate-lyrics-backend",
+          "endpoint": "/api/ai/generate-lyrics",
+          "method": "POST",
+          "payload": {
+            "music_prompt": "{{workflowData.musicPromptData.prompt}}",
+            "genre": "{{workflowData.musicPromptData.genre}}",
+            "project_id": "{{workflowData.project_id}}"
+          },
+          "waitForResponse": true,
+          "timeout": 60000,
+          "autoExecute": true,
+          "saveResponse": {
+            "key": "lyricsData",
+            "path": "data"
+          },
+          "onSuccess": {
+            "nextBrick": "display-lyrics"
+          },
+          "onError": {
+            "message": "Failed to generate lyrics. Please try again.",
+            "retryable": true
+          }
+        },
+        {
+          "type": "waiting_display",
+          "id": "wait-lyrics",
+          "listenTo": "generate-lyrics-backend",
+          "loadingMessage": "Generating creative lyrics for your track...",
+          "estimatedTime": 20,
+          "showProgress": true,
+          "onResponse": {
+            "success": {
+              "displayAs": "text",
+              "message": "Lyrics generated!",
+              "nextBrick": "display-lyrics"
+            },
+            "error": {
+              "message": "Failed to generate lyrics. Please try again.",
+              "retryable": true
+            }
+          }
+        },
+        {
+          "type": "json_display",
+          "id": "display-lyrics",
+          "dataSource": "workflowData.lyricsData",
+          "display": {
+            "assistantFields": [
+              {
+                "key": "lyrics",
+                "label": "Lyrics",
+                "editable": true,
+                "format": "textarea"
+              }
+            ]
+          },
+          "actions": [
+            {
+              "label": "Make Instrumental",
+              "action": "make_instrumental",
+              "variant": "outline",
+              "nextStep": "track_generating",
+              "saveEdits": false
+            },
+            {
+              "label": "Regenerate Lyrics",
+              "action": "regenerate",
+              "variant": "outline",
+              "triggerBrick": "generate-lyrics-backend"
+            },
+            {
+              "label": "Validate & Continue",
+              "action": "validate",
+              "variant": "default",
+              "saveEdits": true,
+              "nextStep": "track_generating"
+            }
+          ]
+        }
+      ],
+      "autoSave": true,
+      "assistantMessage": {
+        "content": "Now let's add lyrics to your track. I'll generate creative lyrics based on your music style, or you can skip this for an instrumental track.",
+        "showDelay": 1200,
+        "enableFileInput": false,
+        "enablePromptInput": false
+      }
+    },
+    "track_generating": {
+      "id": "track_generating",
+      "stepNumber": 4,
+      "bricks": [
+        {
+          "type": "api_call",
+          "id": "generate-music-backend",
+          "endpoint": "/api/ai/generate-music",
+          "method": "POST",
+          "payload": {
+            "prompt": "{{workflowData.musicPromptData.prompt}}",
+            "lyrics": "{{workflowData.lyricsData.lyrics}}",
+            "genre": "{{workflowData.musicPromptData.genre}}",
+            "project_id": "{{workflowData.project_id}}",
+            "is_instrumental": "{{workflowData.isInstrumental}}"
+          },
+          "waitForResponse": true,
+          "timeout": 300000,
+          "autoExecute": true,
+          "saveResponse": {
+            "key": "generatedMusicUrl",
+            "path": "audio_url"
+          },
+          "onSuccess": {
+            "nextBrick": "display-music"
+          },
+          "onError": {
+            "message": "Failed to generate music. Please try again.",
+            "retryable": true
+          }
+        },
+        {
+          "type": "waiting_display",
+          "id": "wait-music-generation",
+          "listenTo": "generate-music-backend",
+          "loadingMessage": "Generating your music track... This may take a few minutes.",
+          "estimatedTime": 120,
+          "showProgress": true,
+          "onResponse": {
+            "success": {
+              "displayAs": "text",
+              "message": "Your music track is ready!",
+              "nextBrick": "display-music"
+            },
+            "error": {
+              "message": "Failed to generate music. Please try again.",
+              "retryable": true
+            }
+          }
+        },
+        {
+          "type": "media_display",
+          "id": "display-music",
+          "mediaType": "audio",
+          "dataSource": "workflowData.generatedMusicUrl",
+          "controls": {
+            "play": true,
+            "seek": true,
+            "volume": true,
+            "download": true
+          },
+          "metadata": {
+            "title": "Your Generated Track",
+            "description": "{{workflowData.musicPromptData.prompt}}",
+            "artist": "AI Generated"
+          },
+          "actions": [
+            {
+              "label": "Regenerate",
+              "icon": "refresh",
+              "variant": "outline",
+              "action": "regenerate",
+              "triggerBrick": "generate-music-backend"
+            },
+            {
+              "label": "Download",
+              "icon": "download",
+              "variant": "outline",
+              "action": "download"
+            },
+            {
+              "label": "Continue to Video",
+              "variant": "default",
+              "nextStep": "video_description"
+            }
+          ]
+        }
+      ],
+      "nextStep": "video_description",
+      "autoSave": true,
+      "assistantMessage": {
+        "content": "Perfect! Now I'll generate your music track. This process may take a few minutes.",
+        "showDelay": 1200,
+        "enableFileInput": false,
+        "enablePromptInput": false
+      }
+    },
+    "video_description": {
+      "id": "video_description",
+      "stepNumber": 5,
+      "bricks": [
+        {
+          "id": "video-description-input",
+          "type": "user_input",
+          "inputType": "text",
+          "saveConfig": {
+            "key": "videoDescription",
+            "type": "string",
+            "backendKey": "settings",
+            "backendType": "dict"
+          },
+          "label": "Video Description",
+          "placeholder": "Describe the visual style and content for your video...",
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "id": "video-description-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate description with AI",
+              "action": "generateVideoDescriptionWithAI",
+              "returnValue": "ai_description",
+              "variant": "default"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Great! Now let's describe the visual style and content for your video. What kind of visuals do you want to see?",
+            "showDelay": 1200,
+            "enableFileInput": false,
+            "enablePromptInput": true
+          }
+        }
+      ],
+      "nextStep": "reference_images",
+      "autoSave": true
+    },
+    "reference_images": {
+      "id": "reference_images",
+      "stepNumber": 6,
+      "bricks": [
+        {
+          "id": "reference-images-upload",
+          "type": "user_input",
+          "inputType": "file",
+          "saveConfig": {
+            "key": "referenceImages",
+            "type": "dict",
+            "backendKey": "referenceImages",
+            "backendType": "dict"
+          },
+          "label": "Upload reference images",
+          "accept": "image/*",
+          "multiple": true,
+          "maxFiles": 10,
+          "validation": {
+            "required": false
+          }
+        },
+        {
+          "id": "reference-images-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Skip reference images",
+              "action": "skipReferenceImages",
+              "returnValue": "skip",
+              "variant": "outline"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "You can upload reference images to help guide the visual style of your video, or skip this step.",
+            "showDelay": 1200,
+            "enableFileInput": true,
+            "enablePromptInput": false
+          }
+        }
+      ],
+      "nextStep": "reference_image_description",
+      "autoSave": true
+    },
+    "reference_image_description": {
+      "id": "reference_image_description",
+      "stepNumber": 7,
+      "bricks": [
+        {
+          "id": "image-description-input",
+          "type": "user_input",
+          "inputType": "text",
+          "saveConfig": {
+            "key": "imageDescription",
+            "type": "string",
+            "backendKey": "settings",
+            "backendType": "dict"
+          },
+          "label": "Image Description",
+          "placeholder": "Describe the style and content of your reference images...",
+          "validation": {
+            "required": false
+          }
+        },
+        {
+          "id": "image-description-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate description with AI",
+              "action": "generateImageDescriptionWithAI",
+              "returnValue": "ai_description",
+              "variant": "default"
+            },
+            {
+              "label": "Skip description",
+              "action": "skipImageDescription",
+              "returnValue": "skip",
+              "variant": "outline"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Describe the style and content of your reference images to help guide the video generation.",
+            "showDelay": 1200,
+            "enableFileInput": false,
+            "enablePromptInput": true
+          }
+        }
+      ],
+      "nextStep": "video_styles",
+      "autoSave": true
+    },
+    "video_styles": {
+      "id": "video_styles",
+      "stepNumber": 8,
+      "bricks": [
+        {
+          "id": "style-selection",
+          "type": "user_input",
+          "inputType": "multiselect",
+          "saveConfig": {
+            "key": "selectedStyles",
+            "type": "array",
+            "backendKey": "settings",
+            "backendType": "dict"
+          },
+          "label": "Select Video Styles",
+          "options": [
+            { "label": "Cinematic", "value": "cinematic" },
+            { "label": "Animated", "value": "animated" },
+            { "label": "Realistic", "value": "realistic" },
+            { "label": "Abstract", "value": "abstract" },
+            { "label": "Minimalist", "value": "minimalist" },
+            { "label": "Vintage", "value": "vintage" }
+          ],
+          "validation": {
+            "required": true
+          }
+        },
+        {
+          "id": "style-actions",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate video",
+              "action": "generateVideo",
+              "returnValue": "generate",
+              "variant": "default"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Select the visual styles you want for your video. You can choose multiple styles.",
+            "showDelay": 1200,
+            "enableFileInput": false,
+            "enablePromptInput": false
+          }
+        }
+      ],
+      "nextStep": "completed",
+      "autoSave": true
+    },
+    "completed": {
+      "id": "completed",
+      "stepNumber": 9,
+      "bricks": [
+        {
+          "id": "completion-message",
+          "type": "llm",
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Your music video clip workflow is complete! Your video is being generated and will be available shortly.",
+            "showDelay": 0,
+            "enableFileInput": false,
+            "enablePromptInput": false
+          }
+        }
+      ],
+      "nextStep": "completed",
+      "autoSave": true
+    }
+  }
+}
