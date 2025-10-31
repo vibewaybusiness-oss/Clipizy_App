@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { ClipizyLogo } from "@/components/common/clipizy-logo";
+import { useToast } from "@/hooks/ui/use-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -18,7 +19,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { signIn, loginWithGoogle, loginWithGithub, isAuthenticated } = useAuth();
+  const auth = useAuth();
+  const { signIn, loginWithGoogle, loginWithGithub, isAuthenticated } = auth || {};
+  const { toast } = useToast();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -29,10 +32,8 @@ export default function LoginPage() {
       
       let redirectPath = sessionStorage.getItem("redirect_after_login") || "/dashboard/create";
       
-      // If we have a projectId, redirect to the music-clip page instead
       if (projectId) {
         redirectPath = `/dashboard/create/music-clip?projectId=${projectId}`;
-        console.log('Redirecting to music-clip page with projectId:', projectId);
       }
       
       sessionStorage.removeItem("redirect_after_login");
@@ -42,20 +43,56 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    if (!auth || !signIn) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Authentication service is not available. Please refresh the page.",
+      });
+      return;
+    }
+    
+    const trimmedEmail = email?.trim();
+    const trimmedPassword = password?.trim();
+    
+    if (!trimmedEmail || !trimmedPassword) {
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please enter both email and password.",
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
-      const success = await signIn(email, password);
-      if (success) {
+      const result = await signIn(trimmedEmail, trimmedPassword);
+      
+      if (result?.success) {
+        toast({
+          title: "Login Successful",
+          description: "Welcome back! Redirecting to your dashboard...",
+        });
         const redirectPath = sessionStorage.getItem("redirect_after_login") || "/dashboard/create";
         sessionStorage.removeItem("redirect_after_login");
         router.push(redirectPath);
       } else {
-        // Handle login failure
-        console.error("Login failed");
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: result?.error || "Invalid email or password. Please try again.",
+        });
       }
     } catch (error) {
       console.error("Login error:", error);
+      toast({
+        variant: "destructive",
+        title: "Login Error",
+        description: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +151,7 @@ export default function LoginPage() {
                     type="email"
                     placeholder="Enter your email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                     className="pl-10"
                     required
                   />
@@ -130,7 +167,7 @@ export default function LoginPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                     className="pl-10 pr-10"
                     required
                   />

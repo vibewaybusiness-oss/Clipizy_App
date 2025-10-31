@@ -2,7 +2,6 @@
 """
 clipizy Backend Startup Script
 """
-import uvicorn
 import os
 import sys
 import time
@@ -11,6 +10,30 @@ from pathlib import Path
 # Add the project root to the Python path so we can import the api module
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
+
+# Load .env file BEFORE any other imports that might need environment variables
+from dotenv import load_dotenv
+env_path = project_root / ".env"
+if env_path.exists():
+    load_dotenv(env_path, override=True)
+    print(f"✅ Loaded environment variables from {env_path}")
+    # Verify critical environment variables are loaded
+    s3_key = os.getenv("S3_ACCESS_KEY")
+    s3_secret = os.getenv("S3_SECRET_KEY")
+    s3_bucket = os.getenv("S3_BUCKET")
+    runpod_key = os.getenv("RUNPOD_API_KEY")
+    if s3_key and s3_secret and s3_bucket:
+        print(f"✅ S3 credentials found (bucket: {s3_bucket})")
+    else:
+        print(f"⚠️  S3 credentials missing - S3_ACCESS_KEY={'set' if s3_key else 'NOT SET'}, S3_SECRET_KEY={'set' if s3_secret else 'NOT SET'}, S3_BUCKET={'set' if s3_bucket else 'NOT SET'}")
+    if runpod_key:
+        print(f"✅ RunPod API key found")
+    else:
+        print(f"⚠️  RunPod API key not found")
+else:
+    print(f"⚠️  .env file not found at {env_path}, using environment variables only")
+
+import uvicorn
 
 def check_database_health():
     """

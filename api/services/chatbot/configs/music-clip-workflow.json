@@ -95,6 +95,11 @@
               "label": "Generate Prompt",
               "action": "generatePrompt",
               "variant": "default",
+              "userMessage": "Generate music prompt",
+              "modal": "GenreSelector",
+              "modalProps": {
+                "isInstrumental": "{{workflowData.isInstrumental}}"
+              },
               "triggerBrick": "generate-music-prompt-backend"
             }
           ],
@@ -133,28 +138,10 @@
           }
         },
         {
-          "type": "waiting_display",
-          "id": "wait-music-prompt",
-          "listenTo": "generate-music-prompt-backend",
-          "loadingMessage": "Analyzing your request and generating optimized music prompt...",
-          "estimatedTime": 15,
-          "showProgress": true,
-          "onResponse": {
-            "success": {
-              "displayAs": "text",
-              "message": "Music prompt generated!",
-              "nextBrick": "display-music-prompt"
-            },
-            "error": {
-              "message": "Failed to generate prompt. Please try again.",
-              "retryable": true
-            }
-          }
-        },
-        {
           "type": "json_display",
           "id": "display-music-prompt",
           "dataSource": "workflowData.musicPromptData",
+          "waitForBrick": "generate-music-prompt-backend",
           "display": {
             "userFields": [
               {
@@ -189,6 +176,7 @@
           ]
         }
       ],
+      "nextStep": "track_ai_lyrics",
       "autoSave": true
     },
     "track_ai_lyrics": {
@@ -196,18 +184,39 @@
       "stepNumber": 3,
       "bricks": [
         {
+          "id": "request-lyrics-generation",
+          "type": "llm",
+          "buttons": [
+            {
+              "label": "Generate Lyrics",
+              "action": "generateLyrics",
+              "variant": "default",
+              "userMessage": "Generate lyrics",
+              "triggerBrick": "generate-lyrics-backend"
+            }
+          ],
+          "activatePrompt": false,
+          "activateFileUpload": false,
+          "assistantMessage": {
+            "content": "Now let's add lyrics to your track. I'll generate creative lyrics based on your music style, or you can skip this for an instrumental track.",
+            "showDelay": 1200,
+            "enableFileInput": false,
+            "enablePromptInput": false
+          }
+        },
+        {
           "type": "api_call",
           "id": "generate-lyrics-backend",
           "endpoint": "/api/ai/generate-lyrics",
           "method": "POST",
           "payload": {
-            "music_prompt": "{{workflowData.musicPromptData.prompt}}",
+            "music_description": "{{workflowData.musicPromptData.prompt}}",
             "genre": "{{workflowData.musicPromptData.genre}}",
             "project_id": "{{workflowData.project_id}}"
           },
           "waitForResponse": true,
           "timeout": 60000,
-          "autoExecute": true,
+          "autoExecute": false,
           "saveResponse": {
             "key": "lyricsData",
             "path": "data"
@@ -221,28 +230,10 @@
           }
         },
         {
-          "type": "waiting_display",
-          "id": "wait-lyrics",
-          "listenTo": "generate-lyrics-backend",
-          "loadingMessage": "Generating creative lyrics for your track...",
-          "estimatedTime": 20,
-          "showProgress": true,
-          "onResponse": {
-            "success": {
-              "displayAs": "text",
-              "message": "Lyrics generated!",
-              "nextBrick": "display-lyrics"
-            },
-            "error": {
-              "message": "Failed to generate lyrics. Please try again.",
-              "retryable": true
-            }
-          }
-        },
-        {
           "type": "json_display",
           "id": "display-lyrics",
           "dataSource": "workflowData.lyricsData",
+          "waitForBrick": "generate-lyrics-backend",
           "display": {
             "assistantFields": [
               {
@@ -277,13 +268,8 @@
           ]
         }
       ],
-      "autoSave": true,
-      "assistantMessage": {
-        "content": "Now let's add lyrics to your track. I'll generate creative lyrics based on your music style, or you can skip this for an instrumental track.",
-        "showDelay": 1200,
-        "enableFileInput": false,
-        "enablePromptInput": false
-      }
+      "nextStep": "track_generating",
+      "autoSave": true
     },
     "track_generating": {
       "id": "track_generating",

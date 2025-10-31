@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
     
     // If running in WSL and no BACKEND_URL is set, use the Windows host IP
     if (process.env.WSL_DISTRO_NAME && !process.env.BACKEND_URL) {
-      backendUrl = 'http://172.31.240.1:8000';
+      backendUrl = 'http://0.0.0.0:8000';
     }
     
     console.log('Next.js rewrites using backend URL:', backendUrl);

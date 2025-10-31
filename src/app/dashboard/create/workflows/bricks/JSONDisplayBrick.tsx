@@ -127,13 +127,71 @@ export const JSONDisplayBrickComponent: React.FC<{
   useEffect(() => {
     const executeAndDisplay = async () => {
       try {
+        const cfg = brick.config as JSONDisplayBrickConfig;
+        
+        if ((cfg as any).waitForBrick) {
+          const waitForBrickId = (cfg as any).waitForBrick;
+          
+          const subscriptionId = brickEventEmitter.on(`complete:${waitForBrickId}`, async (data: any) => {
+            brickEventEmitter.offById(subscriptionId);
+            
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const result = await brick.execute();
+            if (result.success && result.data) {
+              setData(result.data);
+              const initialEditable: Record<string, any> = {};
+              cfg.display.assistantFields?.forEach(field => {
+                if (field.editable && result.data[field.key] !== undefined) {
+                  initialEditable[field.key] = result.data[field.key];
+                }
+              });
+              setEditableValues(initialEditable);
+              
+              const assistantFields = cfg.display.assistantFields || [];
+              if (assistantFields.length > 0) {
+                const field = assistantFields[0];
+                const value = result.data[field.key];
+                if (value !== undefined) {
+                  const messageContent = field.format === 'textarea' 
+                    ? String(value) 
+                    : `${field.label}: ${String(value)}`;
+                  
+                  context.addAssistantMessageWithDelay({
+                    role: 'assistant',
+                    content: messageContent,
+                    actionButtons: cfg.actions?.map((action: any) => ({
+                      label: action.label,
+                      variant: action.variant || 'default',
+                      action: action.action,
+                      onClick: () => handleAction(action)
+                    })) || [],
+                    enableFileInput: false,
+                    enablePromptInput: false
+                  }, 0);
+                }
+              }
+            }
+          });
+          
+          const errorSubscriptionId = brickEventEmitter.on(`error:${waitForBrickId}`, (error: Error) => {
+            brickEventEmitter.offById(subscriptionId);
+            brickEventEmitter.offById(errorSubscriptionId);
+            onError(error);
+          });
+          
+          return () => {
+            brickEventEmitter.offById(subscriptionId);
+            brickEventEmitter.offById(errorSubscriptionId);
+          };
+        }
+        
         const result = await brick.execute();
         if (result.success) {
           // If data is null, it means we're waiting for data to be available
           if (result.data === null) {
             // Set up listener to wait for data updates
             const checkData = () => {
-              const cfg = brick.config as JSONDisplayBrickConfig;
               const dataPath = cfg.dataSource.replace(/^workflowData\./, '');
               const keys = dataPath.split('.');
               // Access workflowData from brick's internal context
@@ -154,7 +212,6 @@ export const JSONDisplayBrickComponent: React.FC<{
             const currentData = checkData();
             if (currentData) {
               setData(currentData);
-              const cfg = brick.config as JSONDisplayBrickConfig;
               const initialEditable: Record<string, any> = {};
               cfg.display.assistantFields?.forEach((field: any) => {
                 if (field.editable && currentData[field.key] !== undefined) {
@@ -162,19 +219,42 @@ export const JSONDisplayBrickComponent: React.FC<{
                 }
               });
               setEditableValues(initialEditable);
+              
+              const assistantFields = cfg.display.assistantFields || [];
+              if (assistantFields.length > 0) {
+                const field = assistantFields[0];
+                const value = currentData[field.key];
+                if (value !== undefined) {
+                  const messageContent = field.format === 'textarea' 
+                    ? String(value) 
+                    : `${field.label}: ${String(value)}`;
+                  
+                  context.addAssistantMessageWithDelay({
+                    role: 'assistant',
+                    content: messageContent,
+                    actionButtons: cfg.actions?.map((action: any) => ({
+                      label: action.label,
+                      variant: action.variant || 'default',
+                      action: action.action,
+                      onClick: () => handleAction(action)
+                    })) || [],
+                    enableFileInput: false,
+                    enablePromptInput: false
+                  }, 0);
+                }
+              }
               return;
             }
 
-            // Poll for data (with timeout) - use useEffect to track workflowData changes
+            // Poll for data (with timeout) - increased timeout for API calls
             let attempts = 0;
-            const maxAttempts = 50; // 5 seconds max wait
+            const maxAttempts = 150; // 15 seconds max wait (increased from 5 seconds)
             const pollInterval = setInterval(() => {
               attempts++;
               const currentData = checkData();
               if (currentData) {
                 clearInterval(pollInterval);
                 setData(currentData);
-                const cfg = brick.config as JSONDisplayBrickConfig;
                 const initialEditable: Record<string, any> = {};
                 cfg.display.assistantFields?.forEach((field: any) => {
                   if (field.editable && currentData[field.key] !== undefined) {
@@ -182,6 +262,30 @@ export const JSONDisplayBrickComponent: React.FC<{
                   }
                 });
                 setEditableValues(initialEditable);
+                
+                const assistantFields = cfg.display.assistantFields || [];
+                if (assistantFields.length > 0) {
+                  const field = assistantFields[0];
+                  const value = currentData[field.key];
+                  if (value !== undefined) {
+                    const messageContent = field.format === 'textarea' 
+                      ? String(value) 
+                      : `${field.label}: ${String(value)}`;
+                    
+                    context.addAssistantMessageWithDelay({
+                      role: 'assistant',
+                      content: messageContent,
+                      actionButtons: cfg.actions?.map((action: any) => ({
+                        label: action.label,
+                        variant: action.variant || 'default',
+                        action: action.action,
+                        onClick: () => handleAction(action)
+                      })) || [],
+                      enableFileInput: false,
+                      enablePromptInput: false
+                    }, 0);
+                  }
+                }
               } else if (attempts >= maxAttempts) {
                 clearInterval(pollInterval);
                 onError(new Error(`Timeout waiting for data at ${brick.config.dataSource}`));
@@ -192,7 +296,6 @@ export const JSONDisplayBrickComponent: React.FC<{
           } else {
             // Data is available
             setData(result.data);
-            const cfg = brick.config as JSONDisplayBrickConfig;
             const initialEditable: Record<string, any> = {};
             cfg.display.assistantFields?.forEach(field => {
               if (field.editable && result.data[field.key] !== undefined) {
@@ -200,6 +303,30 @@ export const JSONDisplayBrickComponent: React.FC<{
               }
             });
             setEditableValues(initialEditable);
+            
+            const assistantFields = cfg.display.assistantFields || [];
+            if (assistantFields.length > 0) {
+              const field = assistantFields[0];
+              const value = result.data[field.key];
+              if (value !== undefined) {
+                const messageContent = field.format === 'textarea' 
+                  ? String(value) 
+                  : `${field.label}: ${String(value)}`;
+                
+                context.addAssistantMessageWithDelay({
+                  role: 'assistant',
+                  content: messageContent,
+                  actionButtons: cfg.actions?.map((action: any) => ({
+                    label: action.label,
+                    variant: action.variant || 'default',
+                    action: action.action,
+                    onClick: () => handleAction(action)
+                  })) || [],
+                  enableFileInput: false,
+                  enablePromptInput: false
+                }, 0);
+              }
+            }
           }
         } else {
           onError(result.error || new Error('Failed to display JSON'));
@@ -240,128 +367,7 @@ export const JSONDisplayBrickComponent: React.FC<{
     onComplete({ action: action.action, data: editableValues });
   }, [brick, editableValues, isEditing, onComplete]);
 
-  const cfg = brick.config as JSONDisplayBrickConfig;
-
-  // If data is null (waiting for data), show loading state
-  if (!data) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="text-center space-y-2">
-          <Loader2 className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Waiting for data...</p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      {/* User Fields - Display as user messages */}
-      {cfg.display.userFields && cfg.display.userFields.length > 0 && (
-        <div className="space-y-2">
-          {cfg.display.userFields.map((field: any, idx: number) => {
-            const value = data[field.key];
-            if (value === undefined) return null;
-
-            return (
-              <div key={idx} className="flex justify-end">
-                <div className="max-w-[70%] bg-blue-600 text-white rounded-2xl px-4 py-2">
-                  <div className="text-xs opacity-80 mb-1">{field.label}</div>
-                  <div className="text-sm">{String(value)}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Assistant Fields - Display as assistant messages */}
-      {cfg.display.assistantFields && cfg.display.assistantFields.length > 0 && (
-        <div className="space-y-2">
-          {cfg.display.assistantFields.map((field: any, idx: number) => {
-            const value = data[field.key];
-            if (value === undefined) return null;
-
-            return (
-              <div key={idx} className="flex justify-start">
-                <div className="max-w-[70%] bg-card border rounded-2xl px-4 py-3">
-                  <div className="text-xs text-muted-foreground mb-2">{field.label}</div>
-                  {field.editable && isEditing ? (
-                    field.format === 'textarea' ? (
-                      <Textarea
-                        value={editableValues[field.key] || ''}
-                        onChange={(e) => setEditableValues(prev => ({
-                          ...prev,
-                          [field.key]: e.target.value
-                        }))}
-                        className="min-h-[100px]"
-                      />
-                    ) : (
-                      <Input
-                        value={editableValues[field.key] || ''}
-                        onChange={(e) => setEditableValues(prev => ({
-                          ...prev,
-                          [field.key]: e.target.value
-                        }))}
-                      />
-                    )
-                  ) : (
-                    <div className="text-sm whitespace-pre-wrap">{String(value)}</div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Actions */}
-      {cfg.actions && cfg.actions.length > 0 && (
-        <div className="flex gap-2 justify-end">
-          {cfg.actions.map((action: any, idx: number) => {
-            if (action.enableEdit && !isEditing) {
-              return (
-                <Button
-                  key={idx}
-                  variant={action.variant || 'outline'}
-                  onClick={() => setIsEditing(true)}
-                >
-                  <Edit2 className="w-4 h-4 mr-2" />
-                  {action.label}
-                </Button>
-              );
-            }
-
-            if (action.saveEdits && isEditing) {
-              return (
-                <Button
-                  key={idx}
-                  variant={action.variant || 'default'}
-                  onClick={() => handleAction(action)}
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {action.label}
-                </Button>
-              );
-            }
-
-            if (!action.enableEdit || isEditing) {
-              return (
-                <Button
-                  key={idx}
-                  variant={action.variant || 'default'}
-                  onClick={() => handleAction(action)}
-                >
-                  {action.label}
-                </Button>
-              );
-            }
-
-            return null;
-          })}
-        </div>
-      )}
-    </div>
-  );
+  // JSONDisplayBrick injects messages into chat, so return null (no inline UI)
+  return null;
 };
 

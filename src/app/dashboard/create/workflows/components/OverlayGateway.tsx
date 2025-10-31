@@ -79,10 +79,12 @@ export function OverlayGateway({ context }: { context: WorkflowContext }) {
 
   useEffect(() => {
     const subId = brickEventEmitter.on('overlay:open', (payload: OverlayRequest) => {
+      console.log('🎭 OverlayGateway received overlay:open:', payload);
       if (current) {
         brickEventEmitter.rejectOverlay(current.requestId, new Error('Overlay superseded'));
       }
       setCurrent(payload);
+      console.log('🎭 OverlayGateway state updated, current:', payload);
     });
 
     return () => {
@@ -90,11 +92,17 @@ export function OverlayGateway({ context }: { context: WorkflowContext }) {
     };
   }, [current]);
 
-  const close = useCallback(() => setCurrent(null), []);
+  const close = useCallback(() => {
+    console.log('🎭 OverlayGateway closing');
+    setCurrent(null);
+  }, []);
 
-  if (!current) return null;
+  if (!current) {
+    return null;
+  }
 
   const { requestId, componentId, props } = current;
+  console.log('🎭 OverlayGateway rendering:', componentId, 'with props:', props);
 
   const resolve = async (result: { value?: string; label?: string } | string) => {
     const normalized = typeof result === 'string' ? { value: result, label: String(result) } : result;

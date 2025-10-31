@@ -264,28 +264,6 @@ export const LLMBrickComponent: React.FC<{
     try {
       brick.getActions().selectButton(buttonId);
       const clicked = brick.config.buttons?.find(btn => btn.action === buttonId);
-      let overlayResult: any = null;
-      
-      if ((clicked as any)?.modal) {
-        const { brickEventEmitter } = await import('./BrickEventEmitter');
-        try {
-          overlayResult = await brickEventEmitter.requestOverlay((clicked as any).modal, (clicked as any).modalProps || {});
-          
-          if (overlayResult?.validated) {
-            const promptValue = overlayResult?.prompt || overlayResult?.value;
-            if (promptValue) {
-              brick.context.setData((prev: any) => ({
-                ...prev,
-                musicDescription: promptValue
-              }));
-              
-              brick.getActions().setPrompt(promptValue);
-            }
-          }
-        } catch (_) {
-          return;
-        }
-      }
       
       // Save prompt input from chat to workflowData.userInput if it exists
       const chatPrompt = context.prompt?.trim();
@@ -298,18 +276,74 @@ export const LLMBrickComponent: React.FC<{
         context.setPrompt("");
       }
       
-      // If user typed something, show it as a user message
-      const userMessageText = chatPrompt || clicked?.userMessage || clicked?.label || 'Button clicked';
-      if (userMessageText && userMessageText !== clicked?.label) {
+      // Show user message BEFORE opening modal (for buttons with userMessage or chat input)
+      const hasModal = !!(clicked as any)?.modal;
+      const userMessageText = chatPrompt || clicked?.userMessage;
+      
+      if (userMessageText) {
         context.setMessages(prev => ([
           ...prev,
           {
             id: `user-${Date.now()}`,
             role: 'user',
-            content: chatPrompt || userMessageText,
+            content: userMessageText,
             timestamp: new Date()
           }
         ]));
+      }
+      
+      let overlayResult: any = null;
+      
+      if (hasModal) {
+        // Resolve template variables in modalProps
+        const rawModalProps = (clicked as any).modalProps || {};
+        const resolvedModalProps: any = {};
+        
+        for (const [key, value] of Object.entries(rawModalProps)) {
+          if (typeof value === 'string' && value.includes('{{')) {
+            // Template interpolation
+            resolvedModalProps[key] = value.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
+              const cleanPath = path.trim().replace(/^workflowData\./, '');
+              const keys = cleanPath.split('.');
+              let resolvedValue: any = brick.context.workflowData;
+              
+              for (const k of keys) {
+                if (resolvedValue && typeof resolvedValue === 'object' && k in resolvedValue) {
+                  resolvedValue = resolvedValue[k];
+                } else {
+                  return match; // Keep original if path not found
+                }
+              }
+              
+              return String(resolvedValue);
+            });
+          } else {
+            resolvedModalProps[key] = value;
+          }
+        }
+        
+        console.log('🎭 Opening modal:', (clicked as any).modal, 'with resolved props:', resolvedModalProps);
+        const { brickEventEmitter } = await import('./BrickEventEmitter');
+        try {
+          overlayResult = await brickEventEmitter.requestOverlay((clicked as any).modal, resolvedModalProps);
+          console.log('✅ Modal resolved with:', overlayResult);
+          
+          if (overlayResult?.validated) {
+            const promptValue = overlayResult?.prompt || overlayResult?.value;
+            if (promptValue) {
+              brick.context.setData((prev: any) => ({
+                ...prev,
+                musicDescription: promptValue
+              }));
+              
+              brick.getActions().setPrompt(promptValue);
+            }
+          }
+        } catch (error) {
+          console.log('Modal cancelled or error:', error);
+          setIsLoading(false);
+          return;
+        }
       }
       
       brick.triggerButtonClick(buttonId);

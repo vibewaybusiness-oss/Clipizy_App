@@ -21,6 +21,68 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Function to load .env file if it exists
+load_env_file() {
+    local env_file="${1:-.env}"
+    if [ -f "$env_file" ]; then
+        echo -e "${BLUE}📄 Loading environment variables from $env_file...${NC}"
+        # Use Python to properly parse .env file (handles quotes, spaces, comments correctly)
+        if command_exists python3; then
+            # Export each variable from .env using Python's dotenv parsing
+            # Use process substitution to avoid subshell issues with while loop
+            while IFS= read -r export_line || [ -n "$export_line" ]; do
+                if [ -n "$export_line" ]; then
+                    eval "$export_line" 2>/dev/null || true
+                fi
+            done < <(python3 - "$env_file" << 'PYEOF'
+import sys
+import codecs
+from pathlib import Path
+
+env_file = Path(sys.argv[1])
+if env_file.exists():
+    # Open file and handle BOM (Byte Order Mark) if present
+    with open(env_file, 'rb') as f:
+        raw_content = f.read()
+        # Remove BOM if present (UTF-8 BOM is b'\xef\xbb\xbf')
+        if raw_content.startswith(codecs.BOM_UTF8):
+            raw_content = raw_content[len(codecs.BOM_UTF8):]
+        content = raw_content.decode('utf-8')
+    
+    for line in content.splitlines():
+        line = line.strip()
+        # Skip empty lines and comments
+        if not line or line.startswith('#'):
+            continue
+        # Only process lines with =
+        if '=' in line:
+            # Split on first = only
+            key, value = line.split('=', 1)
+            # Strip BOM and whitespace from key (handle invisible BOM characters)
+            key = key.strip().lstrip('\ufeff').strip()
+            value = value.strip()
+            # Remove surrounding quotes if present
+            if (value.startswith('"') and value.endswith('"')) or \
+               (value.startswith("'") and value.endswith("'")):
+                value = value[1:-1]
+            # Only export if key is valid (alphanumeric or underscore)
+            if key and key.replace('_', '').isalnum():
+                # Print export statement for bash to eval
+                print(f"export {key}={value!r}")
+PYEOF
+)
+            echo -e "${GREEN}✅ Environment variables loaded${NC}"
+            return 0
+        else
+            echo -e "${YELLOW}⚠️  Python3 not found, cannot parse .env file${NC}"
+            return 1
+        fi
+    else
+        echo -e "${YELLOW}⚠️  $env_file not found. Environment variables not loaded.${NC}"
+        return 1
+    fi
+}
+
 # Try to stop existing containers without sudo
 docker stop clipizy-minio clipizy-postgres 2>/dev/null || true
 docker rm clipizy-minio clipizy-postgres 2>/dev/null || true
@@ -57,6 +119,9 @@ if ! command_exists node; then
 fi
 
 echo -e "${GREEN}✅ All prerequisites found${NC}"
+
+# Load .env file if it exists (before checking S3 config)
+load_env_file ".env"
 
 # Check Amazon S3 Configuration
 echo -e "${BLUE}☁️  Checking Amazon S3 configuration...${NC}"
@@ -138,26 +203,10 @@ else
 
     echo -e "${YELLOW}🚀 Starting FastAPI server with auto-reload...${NC}"
     echo -e "${BLUE}🔄 Auto-reload is ENABLED - changes will be automatically detected${NC}"
-    DATABASE_URL="postgresql+psycopg2://postgres:postgres@localhost:$POSTGRES_PORT/clipizy" python scripts/backend/start.py &
+    # Export all environment variables (including from .env) to the Python process
+    # Use env to ensure all exported variables are passed
+    env DATABASE_URL="postgresql+psycopg2://postgres:postgres@localhost:$POSTGRES_PORT/clipizy" python scripts/backend/start.py &
     echo -e "${GREEN}✅ FastAPI started at http://localhost:8000 with auto-reload${NC}"
-fi
-
-# Start ComfyUI (GPU processing)
-echo -e "${BLUE}🎨 Starting ComfyUI (GPU processing)...${NC}"
-if port_in_use 8188; then
-    echo -e "${YELLOW}⚠️  Port 8188 is already in use. ComfyUI might already be running.${NC}"
-else
-    # Check if ComfyUI directory exists
-    if [ -d "ComfyUI" ]; then
-        cd ComfyUI
-        echo -e "${YELLOW}🚀 Starting ComfyUI server...${NC}"
-        python3 main.py --listen 0.0.0.0 --port 8188 &
-        echo -e "${GREEN}✅ ComfyUI started at http://localhost:8188${NC}"
-        cd ..
-    else
-        echo -e "${YELLOW}⚠️  ComfyUI directory not found. Skipping ComfyUI startup.${NC}"
-        echo -e "${YELLOW}   To install ComfyUI, run: git clone https://github.com/comfyanonymous/ComfyUI.git${NC}"
-    fi
 fi
 
 # Start Next.js Frontend

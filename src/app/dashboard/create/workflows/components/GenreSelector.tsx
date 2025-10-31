@@ -122,15 +122,19 @@ export function GenreSelector({ isOpen, onClose, onSelectGenre, onGenerateRandom
   };
 
 
+  console.log('🎨 GenreSelector rendering with isOpen:', isOpen);
+  
   return (
     <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
       onClick={onClose}
+      style={{ pointerEvents: 'auto' }}
     >
       <div
         ref={modalRef}
         className="bg-card border border-border rounded-2xl  max-w-4xl w-full max-h-[80vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
+        style={{ pointerEvents: 'auto' }}
       >
         {/* Header */}
         <div className="p-6 border-b border-border">

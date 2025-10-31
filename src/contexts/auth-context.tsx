@@ -19,7 +19,7 @@ interface AuthContextType {
   loading: boolean;
   isAuthenticated: boolean;
   isAdmin: boolean;
-  signIn: (email: string, password: string) => Promise<boolean>;
+  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signUp: (email: string, password: string, name?: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<User>) => Promise<void>;
@@ -133,25 +133,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signIn = async (email: string, password: string): Promise<boolean> => {
+  const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setLoading(true);
     try {
+      console.log('🔐 Attempting login for:', email);
+      console.log('📡 API Base URL:', API_BASE_URL);
+      console.log('📡 Email provided:', !!email, 'Password provided:', !!password);
+      
+      const requestBody = { email, password };
+      const requestBodyString = JSON.stringify(requestBody);
+      console.log('📡 Request body string:', requestBodyString);
+      console.log('📡 Request body length:', requestBodyString.length);
+      
       let response: Response;
       try {
-        response = await fetch(`${API_BASE_URL}/auth/login`, {
+        const url = `${API_BASE_URL}/auth/login`;
+        console.log('📡 Full request URL:', url);
+        
+        response = await fetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, password }),
+          body: requestBodyString,
         });
+        console.log('📡 Login response status:', response.status);
       } catch (error) {
         console.error('Network error during sign in:', error);
-        throw new Error('Network error: Unable to connect to authentication server');
+        return { success: false, error: 'Network error: Unable to connect to authentication server' };
       }
 
       if (response.ok) {
         const data = await response.json();
+        if (!data.access_token) {
+          console.error('Login response missing access_token:', data);
+          return { success: false, error: 'Server error: Invalid response format' };
+        }
+        
         localStorage.setItem('access_token', data.access_token);
         if (data.refresh_token) {
           localStorage.setItem('refresh_token', data.refresh_token);
@@ -168,7 +186,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
         } catch (error) {
           console.error('Network error fetching user data:', error);
-          return false;
+          return { success: false, error: 'Network error: Unable to fetch user data' };
         }
         
         if (userResponse.ok) {
@@ -176,19 +194,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(userData);
           localStorage.setItem('user', JSON.stringify(userData));
           
-          // Log user ID to console after successful login
           console.log('🔐 Login Successful!');
           console.log('👤 User ID:', userData.id);
           console.log('📧 User Email:', userData.email);
           console.log('👨‍💼 User Name:', userData.name);
           
-          return true;
+          return { success: true };
+        } else {
+          const errorText = await userResponse.text();
+          console.error('Failed to fetch user data. Status:', userResponse.status, 'Response:', errorText);
+          let errorData;
+          try {
+            errorData = JSON.parse(errorText);
+          } catch {
+            errorData = { detail: 'Failed to fetch user data' };
+          }
+          return { success: false, error: errorData.detail || 'Failed to fetch user data' };
         }
+      } else {
+        const errorText = await response.text();
+        console.error('Login failed. Status:', response.status, 'Response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { detail: 'Invalid email or password' };
+        }
+        return { success: false, error: errorData.detail || errorData.message || 'Invalid email or password' };
       }
-      return false;
     } catch (error) {
       console.error('Sign in error:', error);
-      return false;
+      return { success: false, error: error instanceof Error ? error.message : 'An unexpected error occurred' };
     } finally {
       setLoading(false);
     }
